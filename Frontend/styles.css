@@ -1,0 +1,190 @@
+* {
+    box-sizing: border-box;
+    color: rgb(0, 0, 0);
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: rgb(197, 210, 224);
+}
+
+/*
+.mainHeader {
+    background-size: cover;
+    padding-bottom: 30px;
+    */
+    /*Allow for header to stay in place while scrolling*/
+   /*
+    position: sticky;
+    top: 0px;
+    */
+    /*mainHeader can stay above boxes when scrolling*/
+  /*
+    z-index: 2;
+    height: 25vw;
+    box-shadow: 0px 5px 3px rgba(34,34,34,0.6);
+}
+*/
+.bannerimage{
+    background-size: cover;
+    position: sticky;
+    top: 0px;
+    background-image: url("Images/banner.png");
+    z-index: 2;
+    height: 25vw;
+    box-shadow: 0px 5px 3px rgba(34,34,34,0.6);
+}
+
+.bannerimage.active{
+    display: none;
+}
+
+.resourceTotal {
+    text-align: center;
+}
+.resourceGroupName {
+    /*Changes Distance between "Recursos" and "Bienvendios"*/
+    margin: 30px;
+    font-size: 5vw;
+    color: rgb(0, 0, 0);
+    letter-spacing: 0.3vw;
+    text-shadow:
+        -0.1vw -0.1vw 0 rgb(255, 255, 255),
+        0   -0.1vw 0 rgb(255, 255, 255),
+        0.1vw -0.1vw 0 rgb(255, 255, 255),
+        0.1vw  0   0 rgb(255, 255, 255),
+        0.1vw  0.1vw 0 rgb(255, 255, 255),
+        0    0.1vw 0 rgb(255, 255, 255),
+        -0.1vw  0.1vw 0 rgb(255, 255, 255),
+        -0.1vw  0   0 rgb(255, 255, 255);
+    font-family:fantasy;
+}
+.resourceDescription {
+    width: 80%;
+    margin-top: max(-2vw, -7.5%);
+    margin-left: 10%;
+    font-size: 3vw;
+}
+
+.resources {
+    /*
+    position: relative;
+    */
+    /*Changes Distance between boxes and "Recursos"*/
+    margin: 0px auto;
+    display: flex;
+    flex-wrap: wrap;
+    font-family:fantasy;
+}
+
+.resources .box {
+    position: relative;
+    /*Distance btwn boxes*/
+    margin: 5vw;
+    /*Makes boxes more round*/
+    border-radius: 40px;
+    /*Aligns boxes*/
+    overflow: hidden;
+    margin-right: auto;
+    margin-left: auto;
+    /*Gives boxes their color*/
+    background: rgb(255, 255, 255);
+    width: 35vw;
+    height: min(35vw, 300px);
+    /*Sets distance between boxes AND affects box size*/
+    max-width: 350px;
+    width: 35vw;
+    /*CHANGE: give border*/
+    outline-color: rgb(245, 93, 18);
+    border-style:solid;
+}
+
+/*Cool Effect*/
+.resources .box:not(hover){
+    border-radius: 10%;
+    transition: 1.5s;
+}
+
+.resources .box:hover{
+    /*CHANGE: give glow*/
+    outline-color: rgb(245, 93, 18);
+    outline-style: groove;
+    outline-width: 0.5vw;
+    transition: 0.25s;
+}
+
+.resources .box .title {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    font-size: min(3vw, 25px);
+}
+
+.resources .box .img1 {
+    width: 80%;
+    height: auto;
+    margin-left: 10%;
+    margin-top: 20%;
+}
+
+.resources .box .img2 {
+    width: 80%;
+    height: auto;
+    margin-left: 13.5%;
+    margin-top: 20%;
+}
+
+.resources .box .img3 {
+    width: min(232px, 70%);
+    height: auto;
+    margin-left: min(80px, 18.75%);
+    margin-top: 10%;
+}
+
+.resources .box .img4 {
+    width: 50%;
+    height: auto;
+    margin-left: 25%;
+    margin-top: 20%;
+}
+
+.resources .box .img5 {
+    width: 80%;
+    height: auto;
+    margin-left: 10%;
+    margin-top: 10%;
+}
+
+.resources .box .img6 {
+    width: 80%;
+    height: auto;
+    margin-left: 10%;
+    margin-top: 20%;
+}
+
+.resources .box .img7 {
+    width: 80%;
+    height: auto;
+    margin-left: 10%;
+    margin-top: 20%;
+}
+
+.resources .box .img8 {
+    width: 80%;
+    height: auto;
+    margin-left: 10%;
+    margin-top: 9%;
+}
+
+/*ABOUT US PAGE*/
+.description {
+    text-align: center;
+}
+
+.imgMap {
+    height: 50vw;
+    border-style: groove;
+    border-color: rgb(158, 134, 121);
+    border-width: 1.5vw;
+}

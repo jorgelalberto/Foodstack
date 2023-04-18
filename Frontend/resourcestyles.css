@@ -1,0 +1,97 @@
+* {
+    box-sizing: border-box;
+    color: rgb(0, 0, 0);
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: rgb(197, 210, 224);
+}
+
+.nav a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+}
+
+/*Ask Gissel if she likes new banner*/
+.mainNav {
+    width: auto;
+    text-align: center;
+    font-size: 3.1vw;
+}
+
+.bannerimage{
+    background-size: cover;
+    position: sticky;
+    top: 0px;
+    background-image: url("/Images/mainbanner4.jpg");
+    z-index: 2;
+    height: 25vw;
+    box-shadow: 0px 5px 3px rgba(34,34,34,0.6);
+}
+
+.bannerimage.active{
+    display: none;
+}
+
+.resourceGroupName {
+    text-align: center;
+    /*Changes Distance between "Recursos" and "Bienvendios"*/
+    margin: 30px;
+    font-size: 5vw;
+    color: rgb(0, 0, 0);
+    letter-spacing: 0.3vw;
+    text-shadow:
+        -0.1vw -0.1vw 0 rgb(255, 255, 255),
+        0   -0.1vw 0 rgb(255, 255, 255),
+        0.1vw -0.1vw 0 rgb(255, 255, 255),
+        0.1vw  0   0 rgb(255, 255, 255),
+        0.1vw  0.1vw 0 rgb(255, 255, 255),
+        0    0.1vw 0 rgb(255, 255, 255),
+        -0.1vw  0.1vw 0 rgb(255, 255, 255),
+        -0.1vw  0   0 rgb(255, 255, 255);
+    
+}
+
+.resources {
+    /*Changes Distance between boxes and "Recursos"*/
+    margin: 0px auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.resources .box {
+    position: relative;
+    /*Distance btwn boxes*/
+    margin: 5vw;
+    /*Makes boxes more round*/
+    border-radius: 40px;
+    /*Aligns boxes*/
+    overflow: hidden;
+    margin-right: auto;
+    margin-left: auto;
+    /*Gives boxes their color*/
+    background: rgb(255, 255, 255);
+    height: fit-content;
+    /*Sets distance between boxes AND affects box size*/
+    width: 80%;
+    border-style:solid;
+}
+
+/*Cool Effect*/
+.resources .box:not(hover){
+    border-radius: 10%;
+    transition: 1.5s;
+}
+
+.resources .box .title {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    font-size: min(3vw, 25px);
+}
+
+ul {
+    font-size: min(3vw, 25px);
+}

@@ -1,0 +1,137 @@
+body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    background-color: #66c6d0;
+}
+
+.container {
+    height: 390px;
+    width: 260px;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    cursor: pointer;
+}
+
+
+.black>.left {
+    background-color: #4d4d4d;
+}
+
+.left{
+    height: 150px;
+    width: 40px;
+    transform-origin: 0 0;
+    transform: rotate(90deg) skewX(-30deg) scaleY(0.864);
+}
+
+.black>.right{
+    background-color: #4d4d4d;
+}
+.right {
+    height: 40px;
+    width: 150px;
+    transform-origin: 0 0;
+    transform: rotate(-30deg) skewX(-30deg) scaleY(0.864);
+    position: relative;
+    bottom: 150px;
+}
+.black>.top{
+    background-color: #4d4d4d;
+}
+.top{
+    height: 150px;
+    width: 150px;
+    transform-origin: 0 0;
+    transform: rotate(210deg) skewX(-30deg) scaleY(0.864);
+    position: relative;
+    bottom: 190px;
+    box-shadow: 3px 3px 25px #38dc13;
+    animation: pulsate 1.5s ease-out infinite;
+}
+@-webkit-keyframes pulsate {
+    0% {box-shadow: 0 0 0 #38dc13;}
+    50% {box-shadow: 0 0 30px #38dc13;}
+    100% {box-shadow: 0 0 0 #38dc13;}
+}
+
+
+
+.white>.left{
+    background-color: #e6e6e6;
+}
+.white>.right{
+    background-color: #cbcbcb;
+}
+.white>.top{
+    background-color: #ffffff;
+}
+
+
+
+.stack1,.stack2,.stack3,.stack4,.stack5,.stack6{
+    position: relative;
+    left: 150px;
+    transition: 0.5s;
+}
+.stack1 {top: 150px;}
+.stack2{bottom: 150px; z-index: -1;}
+.stack3{bottom: 450px; z-index: -2;}
+.stack4{bottom: 750px; z-index: -3;}
+.stack5{bottom: 1050px; z-index: -4;}
+.stack6{bottom: 1350px; z-index: -5;}
+.container:hover .stack1{transform: translate(130px,-75px);}
+.container:hover .stack2{transform: translate(-130px,-75px);}
+.container:hover .stack3{transform: translate(130px,-75px);}
+.container:hover .stack4{transform: translate(-130px,-75px);}
+.container:hover .stack5{transform: translate(130px,-75px);}
+.container:hover .stack6{transform: translate(-130px,-75px);}
+
+
+
+.imageToReveal {
+    position: absolute;
+    bottom: 0;
+    width: 50%;
+    padding: 10px;
+    height: 300px;
+    width: 270px;
+    text-align: center;
+}
+.imageToReveal .img {
+    position: relative;
+    scale: 1;
+    width: 100%;
+    justify-content: center;
+    z-index: -10;
+}
+.imageToReveal:hover{
+    z-index: 10;
+}
+
+.containtext {display: inline-block; z-index: 10;}
+.text {
+    font-size: 5em;
+    letter-spacing: 10px;
+    font-family: monospace;
+    border-right: 5px solid;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    animation: 
+        /*steps(num), num should be same # of chars as txt*/
+        typing 2.5s steps(22),
+        cursor .4s step-end infinite alternate;
+}
+/*cursor blinking*/
+@keyframes cursor {
+    50% {border-color: transparent;}
+}
+/*typing effect*/
+@keyframes typing {
+    from {width: 0;}
+}
