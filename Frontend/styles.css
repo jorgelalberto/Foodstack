@@ -36,10 +36,6 @@ html, body {
     box-shadow: 0px 5px 3px rgba(34,34,34,0.6);
 }
 
-.bannerimage.active{
-    display: none;
-}
-
 .resourceTotal {
     text-align: center;
 }
@@ -68,22 +64,16 @@ html, body {
 }
 
 .resources {
-    /*
-    position: relative;
-    */
-    /*Changes Distance between boxes and "Recursos"*/
-    margin: 0px auto;
     display: flex;
-    flex-wrap: wrap;
+    /*Ensures each box in different row*/
+    flex-direction: column;
     font-family:fantasy;
 }
 
 .resources .box {
     position: relative;
-    /*Distance btwn boxes*/
+    /*Distance btwn resources & boxes*/
     margin: 5vw;
-    /*Makes boxes more round*/
-    border-radius: 40px;
     /*Aligns boxes*/
     overflow: hidden;
     margin-right: auto;
@@ -91,10 +81,10 @@ html, body {
     /*Gives boxes their color*/
     background: rgb(255, 255, 255);
     width: 35vw;
-    height: min(35vw, 300px);
+    height: min(15vw, 300px);
     /*Sets distance between boxes AND affects box size*/
-    max-width: 350px;
-    width: 35vw;
+    max-width: 80%;
+    width: 95vw;
     /*CHANGE: give border*/
     outline-color: rgb(245, 93, 18);
     border-style:solid;
@@ -102,7 +92,6 @@ html, body {
 
 /*Cool Effect*/
 .resources .box:not(hover){
-    border-radius: 10%;
     transition: 1.5s;
 }
 

@@ -14,7 +14,6 @@ html, body {
     text-decoration: none;
 }
 
-/*Ask Gissel if she likes new banner*/
 .mainNav {
     width: auto;
     text-align: center;
@@ -65,8 +64,6 @@ html, body {
     position: relative;
     /*Distance btwn boxes*/
     margin: 5vw;
-    /*Makes boxes more round*/
-    border-radius: 40px;
     /*Aligns boxes*/
     overflow: hidden;
     margin-right: auto;
