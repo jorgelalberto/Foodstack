@@ -6,38 +6,7 @@
 html, body {
     margin: 0;
     padding: 0;
-    background-color: rgb(197, 210, 224);
-}
-
-/*
-.mainHeader {
-    background-size: cover;
-    padding-bottom: 30px;
-    */
-    /*Allow for header to stay in place while scrolling*/
-   /*
-    position: sticky;
-    top: 0px;
-    */
-    /*mainHeader can stay above boxes when scrolling*/
-  /*
-    z-index: 2;
-    height: 25vw;
-    box-shadow: 0px 5px 3px rgba(34,34,34,0.6);
-}
-*/
-.bannerimage{
-    background-size: cover;
-    position: sticky;
-    top: 0px;
-    background-image: url("Images/banner.png");
-    z-index: 2;
-    height: 25vw;
-    box-shadow: 0px 5px 3px rgba(34,34,34,0.6);
-}
-
-.resourceTotal {
-    text-align: center;
+    background-color: #66c6d0;
 }
 .resourceGroupName {
     /*Changes Distance between "Recursos" and "Bienvendios"*/
@@ -55,6 +24,7 @@ html, body {
         -0.1vw  0.1vw 0 rgb(255, 255, 255),
         -0.1vw  0   0 rgb(255, 255, 255);
     font-family:fantasy;
+    text-align: center;
 }
 .resourceDescription {
     width: 80%;
@@ -63,117 +33,91 @@ html, body {
     font-size: 3vw;
 }
 
-.resources {
-    display: flex;
-    /*Ensures each box in different row*/
-    flex-direction: column;
-    font-family:fantasy;
+/* Dropdown Button */
+.dropbtn {
+    background-color: #04AA6D;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
 }
-
-.resources .box {
+  
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {background-color: #3e8e41;}
+  
+  /* The search field */
+#myInput {
+    box-sizing: border-box;
+    background-image: url('searchicon.png');
+    background-position: 14px 12px;
+    background-repeat: no-repeat;
+    font-size: 16px;
+    padding: 14px 20px 12px 45px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+}
+  
+/* The search field when it gets focus/clicked on */
+#myInput:focus {outline: 3px solid #ddd;}
+  
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
     position: relative;
-    /*Distance btwn resources & boxes*/
-    margin: 5vw;
-    /*Aligns boxes*/
-    overflow: hidden;
-    margin-right: auto;
-    margin-left: auto;
-    /*Gives boxes their color*/
-    background: rgb(255, 255, 255);
-    width: 35vw;
-    height: min(15vw, 300px);
-    /*Sets distance between boxes AND affects box size*/
-    max-width: 80%;
-    width: 95vw;
-    /*CHANGE: give border*/
-    outline-color: rgb(245, 93, 18);
-    border-style:solid;
+    display: inline-block;
 }
-
-/*Cool Effect*/
-.resources .box:not(hover){
-    transition: 1.5s;
-}
-
-.resources .box:hover{
-    /*CHANGE: give glow*/
-    outline-color: rgb(245, 93, 18);
-    outline-style: groove;
-    outline-width: 0.5vw;
-    transition: 0.25s;
-}
-
-.resources .box .title {
+  
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
     position: absolute;
-    text-align: center;
-    width: 100%;
-    font-size: min(3vw, 25px);
+    background-color: #f6f6f6;
+    min-width: 230px;
+    border: 1px solid #ddd;
+    z-index: 1;
 }
+  
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+  
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+  
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}
 
-.resources .box .img1 {
-    width: 80%;
-    height: auto;
-    margin-left: 10%;
-    margin-top: 20%;
-}
 
-.resources .box .img2 {
-    width: 80%;
-    height: auto;
-    margin-left: 13.5%;
-    margin-top: 20%;
-}
 
-.resources .box .img3 {
-    width: min(232px, 70%);
-    height: auto;
-    margin-left: min(80px, 18.75%);
-    margin-top: 10%;
-}
 
-.resources .box .img4 {
-    width: 50%;
-    height: auto;
-    margin-left: 25%;
-    margin-top: 20%;
+.Meal {
+    position: relative;
+    display: inline-block;
+    padding-left: 20%;
 }
-
-.resources .box .img5 {
-    width: 80%;
-    height: auto;
-    margin-left: 10%;
-    margin-top: 10%;
+/* Dropdown Content (Hidden by Default) */
+.MealIngredients {
+    position: absolute;
+    background-color: #f6f6f6;
+    min-width: 230px;
+    border: 1px solid #ddd;
+    z-index: 1;
 }
-
-.resources .box .img6 {
-    width: 80%;
-    height: auto;
-    margin-left: 10%;
-    margin-top: 20%;
+  
+/* Links inside the dropdown */
+.MealIngredients a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
 }
-
-.resources .box .img7 {
-    width: 80%;
-    height: auto;
-    margin-left: 10%;
-    margin-top: 20%;
-}
-
-.resources .box .img8 {
-    width: 80%;
-    height: auto;
-    margin-left: 10%;
-    margin-top: 9%;
-}
-
-/*ABOUT US PAGE*/
-.description {
-    text-align: center;
-}
-
-.imgMap {
-    height: 50vw;
-    border-style: groove;
-    border-color: rgb(158, 134, 121);
-    border-width: 1.5vw;
-}
+  
+/* Change color of dropdown links on hover */
+.MealIngredients a:hover {background-color: #f1f1f1}
+  
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}

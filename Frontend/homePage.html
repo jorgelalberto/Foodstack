@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="styles.css" />
         <link rel="stylesheet" href="navbar.css">
         <script src="navbar.js" defer></script>
+        <script src="search.js" defer></script>
     </head>
     <body class="colorOfPage">
         <header class="mainHeader">
@@ -28,63 +29,35 @@
                   </ul>
                 </div>
               </nav>
-              <div class="bannerimage"></div>
         </header>
         <section>
             <div class="resourceTotal">
             <h3 class="resourceGroupName">Welcome</h3>
-            <h6 class="resourceDescription">Enter information in the appropriate boxes to get your food stack!</h6>
-            </div>
-            <div class="resources">
-                <div class="box">
-                <a href="Resources/MOC.html">
-                    <span class="title">Mobile Clinic</span>
-                    <img class="img1" src="Images/MOC.png">
-                </a>
+            <div class="dropdown">
+                <button onclick="myFunction()" class="dropbtn">Enter Ingredient</button>
+                <div id="myDropdown" class="dropdown-content">
+                  <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+                  <a onclick="addIngredient(this.id)">About</a>
+                  <a onclick="addIngredient(this.id)">Base</a>
+                  <a onclick="addIngredient(this.id)">Blog</a>
+                  <a onclick="addIngredient(this.id)">Contact</a>
+                  <a onclick="addIngredient(this.id)">Custom</a>
+                  <a onclick="addIngredient(this.id)">Support</a>
+                  <a onclick="addIngredient()">Tools</a>
                 </div>
-                <div class="box">
-                <a href="Resources/DentalCare.html">
-                    <span class="title">Dentist</span>
-                    <img class="img2" src="Images/DentalCare.png">
-                </a>
+              </div>
+              <div class="Meal">
+                <h2 class="MealTitle">Meal</h2>
+                <div id="ingredientList" class="MealIngredients">
+                  <a href="#about">About</a>
+                  <a href="#base">Base</a>
+                  <a href="#blog">Blog</a>
+                  <a href="#contact">Contact</a>
+                  <a href="#custom">Custom</a>
+                  <a href="#support">Support</a>
+                  <a href="#tools">Tools</a>
                 </div>
-                <div class="box">
-                <a href="Resources/EyeCare.html">
-                    <span class="title">Eyecare</span>
-                    <img class="img3" src="Images/EyeCare.png">
-                </a>
-                </div>
-                <div class="box">
-                <a href="Resources/FoodPantry.html">
-                    <span class="title">Food</span>
-                    <img class="img4" src="Images/FoodPantry.png">
-                </a>
-                </div>
-                <div class="box">
-                <a href="Resources/Clothes.html">
-                    <span class="title">Clothes</span>
-                    <img class="img8" src="Images/ropa.jpeg">
-                </a>
-                </div>
-                <div class="box">
-                <a href="Resources/Transportation.html">
-                    <span class="title">Transportation</span>
-                    <img class="img6" src="Images/Transportation.png">
-                </a>
-                </div>
-                <div class="box">
-                <a href="Resources/ESOLClasses.html">
-                    <span class="title">ESOL Classes</span>
-                    <img class="img7" src="Images/ESOL.png">
-                </a>
-                </div>
-                <div class="box">
-                <a href="Resources/FAP.html">
-                    <span class="title">F.A.P.</span>
-                    <img class="img8" src="Images/fap.jpeg">
-                </a>
-                </div>
-            </div> 
+              </div>
         </section>
         <footer>
 
