@@ -1,0 +1,648 @@
+#include "SplayTree.h"
+
+SplayTree::SplayTree() {
+    root = nullptr;
+    CreateBalanced();
+    CreateUserDiet();
+}
+
+SplayTree::SplayTree(const std::string &filename) {
+    root = nullptr;
+    ReadFile(filename);
+    CreateBalanced();
+    CreateUserDiet();
+}
+
+void SplayTree::CreateBalanced() {
+    balanced_diet.Energ_Kcal = 2000;
+    balanced_diet.Protein_g = 50;
+    balanced_diet.Lipid_Tot_g = 70;
+    balanced_diet.Carbohydrt_g = 310;
+    balanced_diet.Fiber_TD_g = 30;
+    balanced_diet.Sugar_Tot_g = 90;
+    balanced_diet.Calcium_mg = 1000;
+    balanced_diet.Iron_mg = 18;
+    balanced_diet.Magnesium_mg = 400;
+    balanced_diet.Phosphorus_mg = 1000;
+    balanced_diet.Potassium_mg = 3500;
+    balanced_diet.Sodium_mg = 2400;
+    balanced_diet.Zinc_mg = 11;
+    balanced_diet.Copper_mg = 0.9;
+    balanced_diet.Manganese_mg = 2.3;
+    balanced_diet.Selenium_ug = 55;
+    balanced_diet.Vit_C_mg = 90;
+    balanced_diet.Thiamin_mg = 1.2;
+    balanced_diet.Riboflavin_mg = 1.3;
+    balanced_diet.Niacin_mg = 16;
+    balanced_diet.Panto_Acid_mg = 5;
+    balanced_diet.Vit_B6_mg = 1.7;
+    balanced_diet.Folate_Tot_ug = 400;
+    balanced_diet.Folic_Acid_ug = 400;
+    balanced_diet.Food_Folate_ug = 400;
+    balanced_diet.Folate_DFE_ug = 400;
+    balanced_diet.Choline_Tot_mg = 425;
+    balanced_diet.Vit_B12_ug = 2.4;
+    balanced_diet.Vit_A_IU = 5000;
+    balanced_diet.Vit_A_RAE = 900;
+    balanced_diet.Retinol_ug = 900;
+    balanced_diet.Alpha_Carot_ug = 700;
+    balanced_diet.Beta_Carot_ug = 700;
+    balanced_diet.Beta_Crypt_ug = 700;
+    balanced_diet.Lycopene_ug = 700;
+    balanced_diet.Lut_Zea_ug = 700;
+    balanced_diet.Vit_D_ug = 20;
+    balanced_diet.Vit_D_IU = 800;
+    balanced_diet.Vit_K_ug = 120;
+    balanced_diet.FA_Sat_g = 20;
+    balanced_diet.FA_Mono_g = 25;
+    balanced_diet.FA_Poly_g = 25;
+    balanced_diet.Cholestrl_mg = 300;
+}
+
+void SplayTree::CreateUserDiet() {
+    user_diet.Energ_Kcal = 0;
+    user_diet.Protein_g = 0;
+    user_diet.Lipid_Tot_g = 0;
+    user_diet.Carbohydrt_g = 0;
+    user_diet.Fiber_TD_g = 0;
+    user_diet.Sugar_Tot_g = 0;
+    user_diet.Calcium_mg = 0;
+    user_diet.Iron_mg = 0;
+    user_diet.Magnesium_mg = 0;
+    user_diet.Phosphorus_mg = 0;
+    user_diet.Potassium_mg = 0;
+    user_diet.Sodium_mg = 0;
+    user_diet.Zinc_mg = 0;
+    user_diet.Copper_mg = 0;
+    user_diet.Manganese_mg = 0;
+    user_diet.Selenium_ug = 0;
+    user_diet.Vit_C_mg = 0;
+    user_diet.Thiamin_mg = 0;
+    user_diet.Riboflavin_mg = 0;
+    user_diet.Niacin_mg = 0;
+    user_diet.Panto_Acid_mg = 0;
+    user_diet.Vit_B6_mg = 0;
+    user_diet.Folate_Tot_ug = 0;
+    user_diet.Folic_Acid_ug = 0;
+    user_diet.Food_Folate_ug = 0;
+    user_diet.Folate_DFE_ug = 0;
+    user_diet.Choline_Tot_mg = 0;
+    user_diet.Vit_B12_ug = 0;
+    user_diet.Vit_A_IU = 0;
+    user_diet.Vit_A_RAE = 0;
+    user_diet.Retinol_ug = 0;
+    user_diet.Alpha_Carot_ug = 0;
+    user_diet.Beta_Carot_ug = 0;
+    user_diet.Beta_Crypt_ug = 0;
+    user_diet.Lycopene_ug = 0;
+    user_diet.Lut_Zea_ug = 0;
+    user_diet.Vit_D_ug = 0;
+    user_diet.Vit_D_IU = 0;
+    user_diet.Vit_K_ug = 0;
+    user_diet.FA_Sat_g = 0;
+    user_diet.FA_Mono_g = 0;
+    user_diet.FA_Poly_g = 0;
+    user_diet.Cholestrl_mg = 0;
+}
+
+
+bool SplayTree::ReadQuotedField(std::stringstream &ss, std::string &field) {
+    field.clear();
+    char c;
+    ss.get(c);
+
+    bool inside_quotes = (c == '"');
+
+    if (inside_quotes) {
+        // Consume the initial double quote
+    } else {
+        field.push_back(c);
+    }
+
+    bool prev_char_was_quote = false;
+    while (ss.get(c)) {
+        if (inside_quotes && c == '"' && !prev_char_was_quote) {
+            prev_char_was_quote = true;
+            continue;
+        }
+        if (inside_quotes && c == '"' && prev_char_was_quote) {
+            prev_char_was_quote = false;
+        } else if (inside_quotes && prev_char_was_quote) {
+            ss.get(c); // Consume the following character, which should be a comma
+            return true;
+        } else if (!inside_quotes && c == ',') {
+            return true;
+        } else {
+            prev_char_was_quote = false;
+        }
+        field.push_back(c);
+    }
+
+    return !field.empty();
+}
+
+void SplayTree::ReadFile(const std::string &filename) {
+
+    std::vector<FoodData> food_data_list;
+
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Error: Unable to open the file: " << filename << std::endl;
+        return;
+    }
+
+    std::string line;
+    getline(file, line); // Skip the header
+    int lineNumber = 2; // Start from the second line as we have already skipped the header
+
+    while (getline(file, line)) {
+        std::stringstream ss(line);
+        FoodData food_data;
+
+        // Fill the struct with data
+        getline(ss, food_data.NDB_No, ',');
+
+        ReadQuotedField(ss, food_data.Shrt_Desc);
+
+#define READ_OR_DEFAULT(variable) \
+if (!getline(ss, line, ',')) { \
+    food_data.variable = 0; \
+} else { \
+    if (line.empty()) { \
+        food_data.variable = 0; \
+    } else { \
+        try { \
+            food_data.variable = std::stod(line); \
+        } catch (const std::invalid_argument& e) { \
+            std::cerr << "Invalid argument: " << e.what() << " for " << #variable << std::endl; \
+            food_data.variable = 0; \
+        } catch (const std::out_of_range& e) { \
+            std::cerr << "Out of range: " << e.what() << " for " << #variable << std::endl; \
+            food_data.variable = 0; \
+        } \
+    } \
+}
+        READ_OR_DEFAULT(Water_g)
+        READ_OR_DEFAULT(Energ_Kcal)
+        READ_OR_DEFAULT(Protein_g)
+        READ_OR_DEFAULT(Lipid_Tot_g)
+        READ_OR_DEFAULT(Ash_g)
+        READ_OR_DEFAULT(Carbohydrt_g)
+        READ_OR_DEFAULT(Fiber_TD_g)
+        READ_OR_DEFAULT(Sugar_Tot_g)
+        READ_OR_DEFAULT(Calcium_mg)
+        READ_OR_DEFAULT(Iron_mg)
+        READ_OR_DEFAULT(Magnesium_mg)
+        READ_OR_DEFAULT(Phosphorus_mg)
+        READ_OR_DEFAULT(Potassium_mg)
+        READ_OR_DEFAULT(Sodium_mg)
+        READ_OR_DEFAULT(Zinc_mg)
+        READ_OR_DEFAULT(Copper_mg)
+        READ_OR_DEFAULT(Manganese_mg)
+        READ_OR_DEFAULT(Selenium_ug)
+        READ_OR_DEFAULT(Vit_C_mg)
+        READ_OR_DEFAULT(Thiamin_mg)
+        READ_OR_DEFAULT(Riboflavin_mg)
+        READ_OR_DEFAULT(Niacin_mg)
+        READ_OR_DEFAULT(Panto_Acid_mg)
+        READ_OR_DEFAULT(Vit_B6_mg)
+        READ_OR_DEFAULT(Folate_Tot_ug)
+        READ_OR_DEFAULT(Folic_Acid_ug)
+        READ_OR_DEFAULT(Food_Folate_ug)
+        READ_OR_DEFAULT(Folate_DFE_ug)
+        READ_OR_DEFAULT(Choline_Tot_mg)
+        READ_OR_DEFAULT(Vit_B12_ug)
+        READ_OR_DEFAULT(Vit_A_IU)
+        READ_OR_DEFAULT(Vit_A_RAE)
+        READ_OR_DEFAULT(Retinol_ug)
+        READ_OR_DEFAULT(Alpha_Carot_ug)
+        READ_OR_DEFAULT(Beta_Carot_ug)
+        READ_OR_DEFAULT(Beta_Crypt_ug)
+        READ_OR_DEFAULT(Lycopene_ug)
+        READ_OR_DEFAULT(Lut_Zea_ug)
+        READ_OR_DEFAULT(Vit_E_mg)
+        READ_OR_DEFAULT(Vit_D_ug)
+        READ_OR_DEFAULT(Vit_D_IU)
+        READ_OR_DEFAULT(Vit_K_ug)
+        READ_OR_DEFAULT(FA_Sat_g)
+        READ_OR_DEFAULT(FA_Mono_g)
+        READ_OR_DEFAULT(FA_Poly_g)
+        READ_OR_DEFAULT(Cholestrl_mg)
+        ReadQuotedField(ss, food_data.GmWt_Desc1);
+        ReadQuotedField(ss, food_data.GmWt_Desc2);
+
+        if (!getline(ss, line, ',')) {
+            food_data.Refuse_Pct = 0;
+        } else {
+            line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
+            if (line.empty() ||
+                !std::all_of(line.begin(), line.end(), [](char c) { return std::isdigit(c) || c == '.'; })) {
+                food_data.Refuse_Pct = 0;
+            } else {
+                try {
+                    food_data.Refuse_Pct = std::stod(line);
+                } catch (const std::invalid_argument &e) {
+                    std::cerr << "Problematic line number: " << lineNumber << std::endl;
+                    std::cerr << "Problematic line content: " << line << std::endl;
+                    std::cerr << "Invalid argument: " << e.what() << " for Refuse_Pct" << std::endl;
+                    food_data.Refuse_Pct = 0;
+                } catch (const std::out_of_range &e) {
+                    std::cerr << "Problematic line number: " << lineNumber << std::endl;
+                    std::cerr << "Problematic line content: " << line << std::endl;
+                    std::cerr << "Out of range: " << e.what() << " for Refuse_Pct" << std::endl;
+                    food_data.Refuse_Pct = 0;
+                }
+            }
+        }
+
+#undef READ_OR_DEFAULT
+        this->Insert(food_data); // Insert the food data into the heap
+        lineNumber++; // Increment the line number
+    }
+}
+
+void SplayTree::Insert(const FoodData &food_data) {
+    root = InsertHelper(root, food_data);
+}
+
+SplayTree::Node *SplayTree::InsertHelper(Node *root, const FoodData &food_data) {
+    if (!root) {
+        return NewNode(food_data);
+    }
+
+    // Splay the node with the closest key to the target key
+    root = Splay(root, food_data.NDB_No);
+
+    if (root->data.NDB_No == food_data.NDB_No) {
+        // If the key already exists, replace the data
+        root->data = food_data;
+    } else if (root->data.NDB_No < food_data.NDB_No) {
+        // Insert the new node to the right of the splayed node
+        Node *new_node = NewNode(food_data);
+        new_node->right = root->right;
+        new_node->left = root;
+        root->right = nullptr;
+        root = new_node;
+    } else {
+        // Insert the new node to the left of the splayed node
+        Node *new_node = NewNode(food_data);
+        new_node->left = root->left;
+        new_node->right = root;
+        root->left = nullptr;
+        root = new_node;
+    }
+
+    return root;
+}
+
+SplayTree::Node *SplayTree::NewNode(const FoodData &food_data) {
+    Node *node = new Node;
+    node->data = food_data;
+    node->left = nullptr;
+    node->right = nullptr;
+    return node;
+}
+
+FoodData *SplayTree::Search(const string &key) {
+    // Search for a FoodData object based on a given key (Shrt_Desc)
+    root = SearchHelper(root, key);
+    if (root && root->data.Shrt_Desc == key) {
+        return &(root->data);
+    }
+    return nullptr;
+}
+
+FoodData* SplayTree::NarrowDownSearch(const std::string &key) {
+    std::vector<FoodData*> results = SearchPartialMatches(key, {});
+    std::string input_key = key;
+
+    while (results.size() > 1 || results.empty()) {
+        PrintSearchResults(results);
+
+        if (results.empty()) {
+            std::cout << "No matches found. Please try again: ";
+        } else {
+            std::cout << "Please refine your search: ";
+        }
+
+        std::getline(std::cin, input_key);
+        results = SearchPartialMatches(input_key, results);
+    }
+
+    if (results.size() == 1) {
+        root = SearchHelper(root, results[0]->Shrt_Desc); // Reorganize the splay tree
+        return results[0];
+    }
+
+    return nullptr;
+}
+
+std::vector<FoodData*> SplayTree::SearchPartialMatches(const std::string &key, const std::vector<FoodData*> &current_results) {
+    std::vector<FoodData*> results;
+    std::string key_upper = key;
+    std::transform(key_upper.begin(), key_upper.end(), key_upper.begin(), ::toupper);
+
+    if (current_results.empty()) {
+        // If no current results, search the entire tree
+        SearchPartialMatchesHelper(root, key_upper, results);
+    } else {
+        // If there are current results, search only within them
+        for (auto &food_data : current_results) {
+            std::string shrt_desc_upper = food_data->Shrt_Desc;
+            std::transform(shrt_desc_upper.begin(), shrt_desc_upper.end(), shrt_desc_upper.begin(), ::toupper);
+
+            if (shrt_desc_upper.find(key_upper) != std::string::npos) {
+                results.push_back(food_data);
+            }
+        }
+    }
+
+    return results;
+}
+
+
+void SplayTree::SearchPartialMatchesHelper(Node *node, const std::string &key, std::vector<FoodData*> &results) {
+    if (!node) {
+        return;
+    }
+
+    std::string shrt_desc_upper = node->data.Shrt_Desc;
+    std::transform(shrt_desc_upper.begin(), shrt_desc_upper.end(), shrt_desc_upper.begin(), ::toupper);
+
+    if (shrt_desc_upper.find(key) != std::string::npos) {
+        results.push_back(&(node->data));
+    }
+
+    SearchPartialMatchesHelper(node->left, key, results);
+    SearchPartialMatchesHelper(node->right, key, results);
+}
+
+// Recursive helper function to search for a node with the given key
+SplayTree::Node *SplayTree::SearchHelper(Node *root, const std::string &key) {
+    if (!root || root->data.Shrt_Desc == key) {
+        return root;
+    }
+
+    if (root->data.Shrt_Desc < key) {
+        if (!root->right) {
+            return root;
+        }
+        if (root->right->data.Shrt_Desc < key) {
+            root->right->right = SearchHelper(root->right->right, key);
+            root = LeftRotate(root);
+        } else if (root->right->data.Shrt_Desc > key) {
+            root->right->left = SearchHelper(root->right->left, key);
+            if (root->right->left) {
+                root->right = RightRotate(root->right);
+            }
+        }
+        return !root->right ? root : LeftRotate(root);
+    } else {
+        if (!root->left) {
+            return root;
+        }
+        if (root->left->data.Shrt_Desc > key) {
+            root->left->left = SearchHelper(root->left->left, key);
+            root = RightRotate(root);
+        } else if (root->left->data.Shrt_Desc < key) {
+            root->left->right = SearchHelper(root->left->right, key);
+            if (root->left->right) {
+                root->left = LeftRotate(root->left);
+            }
+        }
+        return !root->left ? root : RightRotate(root);
+    }
+}
+
+FoodData *SplayTree::FindMaxNutrient(const std::string &nutrient) {
+    if (!root) {
+        return nullptr;
+    }
+
+    FoodData *max_food_data = nullptr;
+    double max_value = -1;
+
+    std::function<void(Node *)> traverse = [&](Node *node) {
+        if (!node) {
+            return;
+        }
+
+        double current_value = node->data.GetValue(nutrient);
+        if (current_value > max_value) {
+            max_value = current_value;
+            max_food_data = &(node->data);
+        }
+
+        traverse(node->left);
+        traverse(node->right);
+    };
+
+    traverse(root);
+    return max_food_data;
+}
+
+SplayTree::Node* SplayTree::SearchNode(Node *root, const std::string &key) {
+    root = SearchHelper(root, key);
+    return root;
+}
+
+// Delete a FoodData object based on a given key (e.g., NDB_No or Shrt_Desc)
+bool SplayTree::Delete(const std::string &key) {
+    if (!root) {
+        return false;
+    }
+
+    root = Splay(root, key);
+    if (root->data.NDB_No != key) {
+        return false; // Key not found
+    }
+
+    Node *left = root->left;
+    Node *right = root->right;
+    delete root;
+    root = Join(left, right);
+
+    return true;
+}
+
+// Perform a right rotation on the given node x
+SplayTree::Node *SplayTree::RightRotate(Node *x) {
+    Node *y = x->left;
+    x->left = y->right;
+    y->right = x;
+    return y;
+}
+
+// Perform a left rotation on the given node x
+SplayTree::Node *SplayTree::LeftRotate(Node *x) {
+    Node *y = x->right;
+    x->right = y->left;
+    y->left = x;
+    return y;
+}
+
+// Join two splay trees with all elements in the left tree having smaller keys than elements in the right tree
+SplayTree::Node *SplayTree::Join(Node *left, Node *right) {
+    if (!left) {
+        return right;
+    }
+    if (!right) {
+        return left;
+    }
+
+    // Find the largest element in the left tree
+    Node *temp = left;
+    while (temp->right) {
+        temp = temp->right;
+    }
+
+    // Splay the largest element to the root of the left tree
+    left = SearchHelper(left, temp->data.NDB_No);
+
+    // Set the right tree as the right child of the left tree
+    left->right = right;
+    return left;
+}
+
+// Split the splay tree into two trees: left tree contains all elements with keys smaller than the given key,
+// and the right tree contains all elements with keys greater than or equal to the given key
+void SplayTree::Split(Node *root, const std::string &key, Node *&left, Node *&right) {
+    if (!root) {
+        left = right = nullptr;
+        return;
+    }
+
+    // Splay the root node based on the given key
+    root = SearchHelper(root, key);
+
+    if (root->data.NDB_No < key) {
+        left = root;
+        right = root->right;
+        left->right = nullptr;
+    } else {
+        right = root;
+        left = root->left;
+        right->left = nullptr;
+    }
+}
+
+// Splay the node with the given key to the root of the splay tree rooted at the given root
+SplayTree::Node *SplayTree::Splay(Node *root, const std::string &key) {
+    if (!root) {
+        return nullptr;
+    }
+
+    if (root->data.NDB_No == key) {
+        return root;
+    }
+
+    if (root->data.NDB_No < key) {
+        // Key is in the right subtree
+        if (!root->right) {
+            return root;
+        }
+
+        if (root->right->data.NDB_No < key) {
+            // Right-right case: rotate left
+            root->right->right = Splay(root->right->right, key);
+            root = LeftRotate(root);
+        } else if (root->right->data.NDB_No > key) {
+            // Right-left case: rotate right and then left
+            root->right->left = Splay(root->right->left, key);
+            if (root->right->left) {
+                root->right = RightRotate(root->right);
+            }
+        }
+
+        return root->right ? LeftRotate(root) : root;
+    } else {
+        // Key is in the left subtree
+        if (!root->left) {
+            return root;
+        }
+
+        if (root->left->data.NDB_No < key) {
+            // Left-right case: rotate left and then right
+            root->left->right = Splay(root->left->right, key);
+            if (root->left->right) {
+                root->left = LeftRotate(root->left);
+            }
+        } else if (root->left->data.NDB_No > key) {
+            // Left-left case: rotate right
+            root->left->left = Splay(root->left->left, key);
+            root = RightRotate(root);
+        }
+
+        return root->left ? RightRotate(root) : root;
+    }
+}
+
+void SplayTree::PrintInOrder() const {
+    PrintInOrderHelper(root);
+    std::cout << std::endl;
+}
+
+void SplayTree::PrintInOrderHelper(const Node *node) const {
+    if (node == nullptr) {
+        return;
+    }
+    PrintInOrderHelper(node->left);
+    std::cout << node->data.Shrt_Desc << endl;
+    PrintInOrderHelper(node->right);
+}
+
+void SplayTree::Print(const FoodData& food) {
+    int sum_fats = food.FA_Sat_g + food.FA_Mono_g + food.FA_Poly_g;
+    cout << "Ingredient: " << food.Shrt_Desc << " Calories: " << food.Energ_Kcal <<
+    " Protein: " << food.Protein_g << " Carbs: " << food.Carbohydrt_g << " Fats: " << sum_fats << endl;
+}
+
+void  SplayTree::PrintSearchResults(vector<FoodData*> &results) {
+    std::cout << "Search results:\n";
+    for (const auto &result : results) {
+        std::cout << result->Shrt_Desc << std::endl;
+    }
+}
+
+void SplayTree::CalculateFindMissing(vector<string> &keys) {
+    for(const string& key: keys) {
+        FoodData *temp = NarrowDownSearch(key);
+        if (temp == nullptr) {
+            cout << "Ingredient not found" << endl;
+            continue;
+        }
+        user_diet = user_diet+*temp;
+    }
+
+    cout << "Your daily intake: ";
+    Print(user_diet);
+    // TODO: Calculate % nutrient missing from diet and get top 3 missing ingredients
+    FoodData percent_missing =  user_diet / balanced_diet;
+    percent_missing = percent_missing*100;
+
+    vector<pair<string, double>> percents = percent_missing.GetNutrientValues();
+    // Sort the percents vector by lowest value first
+    std::sort(percents.begin(), percents.end(), [](const auto &a, const auto &b) {
+        return a.second < b.second;
+    });
+
+    // Put the 3 lowest values in a vector of strings
+    std::vector<std::string> lowest_three_nutrients;
+    for (int i = 0; i < 3 && i < percents.size(); ++i) {
+        lowest_three_nutrients.push_back(percents[i].first);
+    }
+
+    // now find the 3 highest ingredients with these nutrients
+    vector<FoodData* > missing_from_diet;
+    missing_from_diet.reserve(lowest_three_nutrients.size());
+    for (const string& i : lowest_three_nutrients){
+        missing_from_diet.push_back(FindMaxNutrient(i));
+    }
+
+    // Print missing ingredients
+    for(FoodData *f: missing_from_diet) {
+        Print(*f);
+    }
+
+}
+
