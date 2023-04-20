@@ -314,6 +314,7 @@ FoodData *SplayTree::Search(const string &key) {
 
 FoodData* SplayTree::NarrowDownSearch(const std::string &key) {
     std::vector<FoodData*> results = SearchPartialMatches(key, {});
+    std::vector<FoodData*> prev_results;
     std::string input_key = key;
 
     while (results.size() > 1 || results.empty()) {
@@ -326,7 +327,14 @@ FoodData* SplayTree::NarrowDownSearch(const std::string &key) {
         }
 
         std::getline(std::cin, input_key);
+
+        prev_results = results; // Save previous results
         results = SearchPartialMatches(input_key, results);
+
+        // If the new search has no matches, revert to the previous results
+        if (results.empty()) {
+            results = prev_results;
+        }
     }
 
     if (results.size() == 1) {
