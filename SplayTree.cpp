@@ -105,7 +105,6 @@ void SplayTree::CreateUserDiet() {
     user_diet.Cholestrl_mg = 0;
 }
 
-
 bool SplayTree::ReadQuotedField(std::stringstream &ss, std::string &field) {
     field.clear();
     char c;
@@ -312,9 +311,9 @@ FoodData *SplayTree::Search(const string &key) {
     return nullptr;
 }
 
-FoodData* SplayTree::NarrowDownSearch(const std::string &key) {
-    std::vector<FoodData*> results = SearchPartialMatches(key, {});
-    std::vector<FoodData*> prev_results;
+FoodData *SplayTree::NarrowDownSearch(const std::string &key) {
+    std::vector<FoodData *> results = SearchPartialMatches(key, {});
+    std::vector<FoodData *> prev_results;
     std::string input_key = key;
 
     while (results.size() > 1 || results.empty()) {
@@ -345,8 +344,9 @@ FoodData* SplayTree::NarrowDownSearch(const std::string &key) {
     return nullptr;
 }
 
-std::vector<FoodData*> SplayTree::SearchPartialMatches(const std::string &key, const std::vector<FoodData*> &current_results) {
-    std::vector<FoodData*> results;
+std::vector<FoodData *>
+SplayTree::SearchPartialMatches(const std::string &key, const std::vector<FoodData *> &current_results) {
+    std::vector<FoodData *> results;
     std::string key_upper = key;
     std::transform(key_upper.begin(), key_upper.end(), key_upper.begin(), ::toupper);
 
@@ -355,7 +355,7 @@ std::vector<FoodData*> SplayTree::SearchPartialMatches(const std::string &key, c
         SearchPartialMatchesHelper(root, key_upper, results);
     } else {
         // If there are current results, search only within them
-        for (auto &food_data : current_results) {
+        for (auto &food_data: current_results) {
             std::string shrt_desc_upper = food_data->Shrt_Desc;
             std::transform(shrt_desc_upper.begin(), shrt_desc_upper.end(), shrt_desc_upper.begin(), ::toupper);
 
@@ -368,8 +368,7 @@ std::vector<FoodData*> SplayTree::SearchPartialMatches(const std::string &key, c
     return results;
 }
 
-
-void SplayTree::SearchPartialMatchesHelper(Node *node, const std::string &key, std::vector<FoodData*> &results) {
+void SplayTree::SearchPartialMatchesHelper(Node *node, const std::string &key, std::vector<FoodData *> &results) {
     if (!node) {
         return;
     }
@@ -449,7 +448,7 @@ FoodData *SplayTree::FindMaxNutrient(const std::string &nutrient) {
     return max_food_data;
 }
 
-SplayTree::Node* SplayTree::SearchNode(Node *root, const std::string &key) {
+SplayTree::Node *SplayTree::SearchNode(Node *root, const std::string &key) {
     root = SearchHelper(root, key);
     return root;
 }
@@ -599,34 +598,40 @@ void SplayTree::PrintInOrderHelper(const Node *node) const {
     PrintInOrderHelper(node->right);
 }
 
-void SplayTree::Print(const FoodData& food) {
+void SplayTree::Print(const FoodData &food) {
     int sum_fats = food.FA_Sat_g + food.FA_Mono_g + food.FA_Poly_g;
     cout << "Ingredient: " << food.Shrt_Desc << " Calories: " << food.Energ_Kcal <<
-    " Protein: " << food.Protein_g << " Carbs: " << food.Carbohydrt_g << " Fats: " << sum_fats << endl;
+         " Protein: " << food.Protein_g << " Carbs: " << food.Carbohydrt_g << " Fats: " << sum_fats << endl;
 }
 
-void  SplayTree::PrintSearchResults(vector<FoodData*> &results) {
+void SplayTree::PrintUserDiet(const FoodData &food) {
+    int sum_fats = food.FA_Sat_g + food.FA_Mono_g + food.FA_Poly_g;
+    cout << "Your daily intake: " << food.Shrt_Desc << " Calories: " << food.Energ_Kcal <<
+         " Protein: " << food.Protein_g << " Carbs: " << food.Carbohydrt_g << " Fats: " << sum_fats << endl;
+}
+
+void SplayTree::PrintSearchResults(vector<FoodData *> &results) {
     std::cout << "Search results:\n";
-    for (const auto &result : results) {
+    for (const auto &result: results) {
         std::cout << result->Shrt_Desc << std::endl;
     }
 }
 
 void SplayTree::CalculateFindMissing(vector<string> &keys) {
-    for(const string& key: keys) {
+    for (const string &key: keys) {
         FoodData *temp = NarrowDownSearch(key);
         if (temp == nullptr) {
             cout << "Ingredient not found" << endl;
             continue;
         }
-        user_diet = user_diet+*temp;
+        user_diet = user_diet + *temp;
     }
 
-    cout << "Your daily intake: ";
-    Print(user_diet);
+    PrintUserDiet(user_diet);
+
     // TODO: Calculate % nutrient missing from diet and get top 3 missing ingredients
-    FoodData percent_missing =  user_diet / balanced_diet;
-    percent_missing = percent_missing*100;
+    FoodData percent_missing = user_diet / balanced_diet;
+    percent_missing = percent_missing * 100;
 
     vector<pair<string, double>> percents = percent_missing.GetNutrientValues();
     // Sort the percents vector by lowest value first
@@ -636,21 +641,37 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
 
     // Put the 3 lowest values in a vector of strings
     std::vector<std::string> lowest_three_nutrients;
-    for (int i = 0; i < 3 && i < percents.size(); ++i) {
-        lowest_three_nutrients.push_back(percents[i].first);
+    cout << "Most missing nutrients: ";
+    for (auto & percent : percents) {
+        if (percent.first != "Refuse_Pct" && percent.first != "GmWt_2" && percent.first != "GmWt_1") {
+            lowest_three_nutrients.push_back(percent.first);
+        }
+        if (lowest_three_nutrients.size() >= 3) {
+            break;
+        }
     }
-
+    for (const auto & lowest_three_nutrient : lowest_three_nutrients)
+    {
+        cout << lowest_three_nutrient << " ";
+    }
+    cout << endl;
     // now find the 3 highest ingredients with these nutrients
-    vector<FoodData* > missing_from_diet;
-    missing_from_diet.reserve(lowest_three_nutrients.size());
-    for (const string& i : lowest_three_nutrients){
-        missing_from_diet.push_back(FindMaxNutrient(i));
+    // now find the 3 highest ingredients with these nutrients
+    vector<FoodData*> missing_from_diet;
+    set<string> added_ingredients;
+    for (const string& i : lowest_three_nutrients) {
+        FoodData* max_nutrient_food = FindMaxNutrient(i);
+
+        // Check if the ingredient is already added
+        if (added_ingredients.find(max_nutrient_food->Shrt_Desc) == added_ingredients.end()) {
+            missing_from_diet.push_back(max_nutrient_food);
+            added_ingredients.insert(max_nutrient_food->Shrt_Desc);
+        }
     }
 
     // Print missing ingredients
     for(FoodData *f: missing_from_diet) {
         Print(*f);
     }
-
 }
 

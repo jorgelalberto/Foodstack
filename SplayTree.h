@@ -6,12 +6,13 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <set>
 
 using namespace std;
 
 struct FoodData {
     string NDB_No = "";
-    string Shrt_Desc= "";
+    string Shrt_Desc = "";
     double Water_g = 0, Energ_Kcal = 0, Protein_g = 0, Lipid_Tot_g = 0, Ash_g = 0, Carbohydrt_g = 0, Fiber_TD_g = 0, Sugar_Tot_g = 0;
     double Calcium_mg = 0, Iron_mg = 0, Magnesium_mg = 0, Phosphorus_mg = 0, Potassium_mg = 0, Sodium_mg = 0, Zinc_mg = 0, Copper_mg = 0, Manganese_mg = 0, Selenium_ug = 0;
     double Vit_C_mg = 0, Thiamin_mg = 0, Riboflavin_mg = 0, Niacin_mg = 0, Panto_Acid_mg = 0, Vit_B6_mg = 0, Folate_Tot_ug = 0, Folic_Acid_ug = 0, Food_Folate_ug = 0, Folate_DFE_ug = 0;
@@ -161,7 +162,7 @@ struct FoodData {
 
         // Add each nutrient value from the two FoodData objects
         result.Water_g = Water_g / other.Water_g;
-    result.Energ_Kcal = Energ_Kcal / other.Energ_Kcal;
+        result.Energ_Kcal = Energ_Kcal / other.Energ_Kcal;
         result.Protein_g = Protein_g / other.Protein_g;
         result.Lipid_Tot_g = Lipid_Tot_g / other.Lipid_Tot_g;
         result.Ash_g = Ash_g / other.Ash_g;
@@ -224,58 +225,58 @@ struct FoodData {
         result.Refuse_Pct = 0;
 
         // Add each nutrient value from the two FoodData objects
-        result.Water_g = Water_g *n;
-        result.Energ_Kcal = Energ_Kcal *n;
-        result.Protein_g = Protein_g *n;
-        result.Lipid_Tot_g = Lipid_Tot_g *n;
-        result.Ash_g = Ash_g *n;
-        result.Carbohydrt_g = Carbohydrt_g *n;
-        result.Fiber_TD_g = Fiber_TD_g *n;
-        result.Sugar_Tot_g = Sugar_Tot_g *n;
-        result.Calcium_mg = Calcium_mg *n;
-        result.Iron_mg = Iron_mg *n;
-        result.Magnesium_mg = Magnesium_mg *n;
-        result.Phosphorus_mg = Phosphorus_mg *n;
-        result.Potassium_mg = Potassium_mg *n;
-        result.Sodium_mg = Sodium_mg *n;
-        result.Zinc_mg = Zinc_mg *n;
-        result.Copper_mg = Copper_mg *n;
-        result.Manganese_mg = Manganese_mg *n;
-        result.Selenium_ug = Selenium_ug *n;
-        result.Vit_C_mg = Vit_C_mg *n;
-        result.Thiamin_mg = Thiamin_mg *n;
-        result.Riboflavin_mg = Riboflavin_mg *n;
-        result.Niacin_mg = Niacin_mg *n;
-        result.Panto_Acid_mg = Panto_Acid_mg *n;
-        result.Vit_B6_mg = Vit_B6_mg *n;
-        result.Folate_Tot_ug = Folate_Tot_ug *n;
-        result.Folic_Acid_ug = Folic_Acid_ug *n;
-        result.Food_Folate_ug = Food_Folate_ug *n;
-        result.Folate_DFE_ug = Folate_DFE_ug *n;
-        result.Choline_Tot_mg = Choline_Tot_mg *n;
-        result.Vit_B12_ug = Vit_B12_ug *n;
-        result.Vit_A_IU = Vit_A_IU *n;
-        result.Vit_A_RAE = Vit_A_RAE *n;
-        result.Retinol_ug = Retinol_ug *n;
-        result.Alpha_Carot_ug = Alpha_Carot_ug *n;
-        result.Beta_Carot_ug = Beta_Carot_ug *n;
-        result.Beta_Crypt_ug = Beta_Crypt_ug *n;
-        result.Lycopene_ug = Lycopene_ug *n;
-        result.Lut_Zea_ug = Lut_Zea_ug *n;
-        result.Vit_E_mg = Vit_E_mg *n;
-        result.Vit_D_ug = Vit_D_ug *n;
-        result.Vit_D_IU = Vit_D_IU *n;
-        result.Vit_K_ug = Vit_K_ug *n;
-        result.FA_Sat_g = FA_Sat_g *n;
-        result.FA_Mono_g = FA_Mono_g *n;
-        result.FA_Poly_g = FA_Poly_g *n;
-        result.Cholestrl_mg = Cholestrl_mg *n;
+        result.Water_g = Water_g * n;
+        result.Energ_Kcal = Energ_Kcal * n;
+        result.Protein_g = Protein_g * n;
+        result.Lipid_Tot_g = Lipid_Tot_g * n;
+        result.Ash_g = Ash_g * n;
+        result.Carbohydrt_g = Carbohydrt_g * n;
+        result.Fiber_TD_g = Fiber_TD_g * n;
+        result.Sugar_Tot_g = Sugar_Tot_g * n;
+        result.Calcium_mg = Calcium_mg * n;
+        result.Iron_mg = Iron_mg * n;
+        result.Magnesium_mg = Magnesium_mg * n;
+        result.Phosphorus_mg = Phosphorus_mg * n;
+        result.Potassium_mg = Potassium_mg * n;
+        result.Sodium_mg = Sodium_mg * n;
+        result.Zinc_mg = Zinc_mg * n;
+        result.Copper_mg = Copper_mg * n;
+        result.Manganese_mg = Manganese_mg * n;
+        result.Selenium_ug = Selenium_ug * n;
+        result.Vit_C_mg = Vit_C_mg * n;
+        result.Thiamin_mg = Thiamin_mg * n;
+        result.Riboflavin_mg = Riboflavin_mg * n;
+        result.Niacin_mg = Niacin_mg * n;
+        result.Panto_Acid_mg = Panto_Acid_mg * n;
+        result.Vit_B6_mg = Vit_B6_mg * n;
+        result.Folate_Tot_ug = Folate_Tot_ug * n;
+        result.Folic_Acid_ug = Folic_Acid_ug * n;
+        result.Food_Folate_ug = Food_Folate_ug * n;
+        result.Folate_DFE_ug = Folate_DFE_ug * n;
+        result.Choline_Tot_mg = Choline_Tot_mg * n;
+        result.Vit_B12_ug = Vit_B12_ug * n;
+        result.Vit_A_IU = Vit_A_IU * n;
+        result.Vit_A_RAE = Vit_A_RAE * n;
+        result.Retinol_ug = Retinol_ug * n;
+        result.Alpha_Carot_ug = Alpha_Carot_ug * n;
+        result.Beta_Carot_ug = Beta_Carot_ug * n;
+        result.Beta_Crypt_ug = Beta_Crypt_ug * n;
+        result.Lycopene_ug = Lycopene_ug * n;
+        result.Lut_Zea_ug = Lut_Zea_ug * n;
+        result.Vit_E_mg = Vit_E_mg * n;
+        result.Vit_D_ug = Vit_D_ug * n;
+        result.Vit_D_IU = Vit_D_IU * n;
+        result.Vit_K_ug = Vit_K_ug * n;
+        result.FA_Sat_g = FA_Sat_g * n;
+        result.FA_Mono_g = FA_Mono_g * n;
+        result.FA_Poly_g = FA_Poly_g * n;
+        result.Cholestrl_mg = Cholestrl_mg * n;
 
         return result;
     }
 
     // Return one nutrient value for a given nutrient name
-    double GetValue(const string& nutrient) const {
+    double GetValue(const string &nutrient) const {
         if (nutrient == "Energ_Kcal") return Energ_Kcal;
         if (nutrient == "Protein_g") return Protein_g;
         if (nutrient == "Lipid_Tot_g") return Lipid_Tot_g;
@@ -330,55 +331,55 @@ struct FoodData {
     // Return a vector of nutrient values
     std::vector<pair<string, double>> GetNutrientValues() {
         return {
-                {"Water_g", Water_g},
-                {"Energ_Kcal", Energ_Kcal},
-                {"Protein_g", Protein_g},
-                {"Lipid_Tot_g", Lipid_Tot_g},
-                {"Ash_g", Ash_g},
-                {"Carbohydrt_g", Carbohydrt_g},
-                {"Fiber_TD_g", Fiber_TD_g},
-                {"Sugar_Tot_g", Sugar_Tot_g},
-                {"Calcium_mg", Calcium_mg},
-                {"Iron_mg", Iron_mg},
-                {"Magnesium_mg", Magnesium_mg},
-                {"Phosphorus_mg",Phosphorus_mg},
-                {"Potassium_mg", Potassium_mg},
-                {"Sodium_mg", Sodium_mg},
-                {"Zinc_mg", Zinc_mg},
-                {"Copper_mg", Copper_mg},
-                {"Manganese_mg", Manganese_mg},
-                {"Selenium_ug", Selenium_ug},
-                {"Vit_C_mg", Vit_C_mg},
-                {"Thiamin_mg", Thiamin_mg},
-                {"Riboflavin_mg", Riboflavin_mg},
-                {"Niacin_mg", Niacin_mg},
-                {"Panto_Acid_mg", Panto_Acid_mg},
-                {"Vit_B6_mg", Vit_B6_mg},
-                {"Folate_Tot_ug", Folate_Tot_ug},
-                {"Folic_Acid_ug", Folic_Acid_ug},
+                {"Water_g",        Water_g},
+                {"Energ_Kcal",     Energ_Kcal},
+                {"Protein_g",      Protein_g},
+                {"Lipid_Tot_g",    Lipid_Tot_g},
+                {"Ash_g",          Ash_g},
+                {"Carbohydrt_g",   Carbohydrt_g},
+                {"Fiber_TD_g",     Fiber_TD_g},
+                {"Sugar_Tot_g",    Sugar_Tot_g},
+                {"Calcium_mg",     Calcium_mg},
+                {"Iron_mg",        Iron_mg},
+                {"Magnesium_mg",   Magnesium_mg},
+                {"Phosphorus_mg",  Phosphorus_mg},
+                {"Potassium_mg",   Potassium_mg},
+                {"Sodium_mg",      Sodium_mg},
+                {"Zinc_mg",        Zinc_mg},
+                {"Copper_mg",      Copper_mg},
+                {"Manganese_mg",   Manganese_mg},
+                {"Selenium_ug",    Selenium_ug},
+                {"Vit_C_mg",       Vit_C_mg},
+                {"Thiamin_mg",     Thiamin_mg},
+                {"Riboflavin_mg",  Riboflavin_mg},
+                {"Niacin_mg",      Niacin_mg},
+                {"Panto_Acid_mg",  Panto_Acid_mg},
+                {"Vit_B6_mg",      Vit_B6_mg},
+                {"Folate_Tot_ug",  Folate_Tot_ug},
+                {"Folic_Acid_ug",  Folic_Acid_ug},
                 {"Food_Folate_ug", Food_Folate_ug},
-                {"Folate_DFE_ug", Folate_DFE_ug},
+                {"Folate_DFE_ug",  Folate_DFE_ug},
                 {"Choline_Tot_mg", Choline_Tot_mg},
-                {"Vit_B12_ug", Vit_B12_ug},
-                {"Vit_A_IU", Vit_A_IU},
-                {"Vit_A_RAE", Vit_A_RAE},
-                {"Retinol_ug", Retinol_ug},
+                {"Vit_B12_ug",     Vit_B12_ug},
+                {"Vit_A_IU",       Vit_A_IU},
+                {"Vit_A_RAE",      Vit_A_RAE},
+                {"Retinol_ug",     Retinol_ug},
                 {"Alpha_Carot_ug", Alpha_Carot_ug},
-                {"Beta_Carot_ug", Beta_Carot_ug},
-                {"Beta_Crypt_ug", Beta_Crypt_ug},
-                {"Lycopene_ug", Lycopene_ug},
-                {"Lut_Zea_ug", Lut_Zea_ug},
-                {"Vit_E_mg", Vit_E_mg},
-                {"Vit_D_ug", Vit_D_ug},
-                {"Vit_D_IU", Vit_D_IU},
-                {"Vit_K_ug", Vit_K_ug},
-                {"FA_Sat_g", FA_Sat_g},
-                {"FA_Mono_g", FA_Mono_g},
-                {"FA_Poly_g", FA_Poly_g},
-                {"Cholestrl_mg", Cholestrl_mg},
-                {"GmWt_1", GmWt_1},
-                {"GmWt_2", GmWt_2},
-                {"Refuse_Pct", Refuse_Pct}
+                {"Beta_Carot_ug",  Beta_Carot_ug},
+                {"Beta_Crypt_ug",  Beta_Crypt_ug},
+                {"Lycopene_ug",    Lycopene_ug},
+                {"Lut_Zea_ug",     Lut_Zea_ug},
+                {"Vit_E_mg",       Vit_E_mg},
+                {"Vit_D_ug",       Vit_D_ug},
+                {"Vit_D_IU",       Vit_D_IU},
+                {"Vit_K_ug",       Vit_K_ug},
+                {"FA_Sat_g",       FA_Sat_g},
+                {"FA_Mono_g",      FA_Mono_g},
+                {"FA_Poly_g",      FA_Poly_g},
+                {"Cholestrl_mg",   Cholestrl_mg},
+                {"GmWt_1",         GmWt_1},
+                {"GmWt_2",         GmWt_2},
+                {"Refuse_Pct",     Refuse_Pct}
         };
     }
 };
@@ -399,6 +400,7 @@ private:
 
 public:
     SplayTree();
+
     SplayTree(const std::string &filename);
 
     // Insert a FoodData object into the splay tree
@@ -406,11 +408,13 @@ public:
 
     // Search for a FoodData object based on a given key (e.g., NDB_No or Shrt_Desc)
     FoodData *Search(const std::string &key); // return a FoodData
-    Node* SearchNode(Node *root, const std::string &key); // return a node
-    void SearchPartialMatchesHelper(Node *node, const std::string &key, std::vector<FoodData*> &results); // helper
-    vector<FoodData*> SearchPartialMatches(const std::string &key, const std::vector<FoodData*> &current_results); // Return a vector of matches
-    FoodData* NarrowDownSearch(const std::string &key);
-    FoodData * FindMaxNutrient(const std::string &nutrient);
+    Node *SearchNode(Node *root, const std::string &key); // return a node
+    void SearchPartialMatchesHelper(Node *node, const std::string &key, std::vector<FoodData *> &results); // helper
+    vector<FoodData *> SearchPartialMatches(const std::string &key,
+                                            const std::vector<FoodData *> &current_results); // Return a vector of matches
+    FoodData *NarrowDownSearch(const std::string &key);
+
+    FoodData *FindMaxNutrient(const std::string &nutrient);
 
     // Delete a FoodData object based on a given key (e.g., NDB_No or Shrt_Desc)
     bool Delete(const std::string &key);
@@ -418,6 +422,7 @@ public:
     void ReadFile(const std::string &filename);
 
     void CreateBalanced();
+
     void CreateUserDiet();
 
     bool ReadQuotedField(std::stringstream &ss, std::string &field);
@@ -441,9 +446,11 @@ public:
 
     void PrintInOrder() const; // Print the splay tree in order (entire list)
 
-    void Print(const FoodData& food); // Print a single FoodData item
+    void Print(const FoodData &food); // Print a single FoodData item
 
-    void PrintSearchResults(vector<FoodData*> &results); // Print the search results
+    void PrintUserDiet(const FoodData &food);
+
+    void PrintSearchResults(vector<FoodData *> &results); // Print the search results
 
     // Calculations for Entering 3 Ingredients
     void CalculateFindMissing(vector<string> &keys); // Calculate and print the missing nutrients from diet
