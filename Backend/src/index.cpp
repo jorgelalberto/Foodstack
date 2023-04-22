@@ -7,8 +7,9 @@ Napi::String greetHello(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
 
     // call 'helloUser' func from 'greeting.cpp' file
-    // WARNING: We are passing hardcoded 'JORGE' value for now
-    std::string result = helloUser("JORGE");
+    // hardcoded version: std::string result = helloUser("JORGE");
+    std::string user = (std::string) info[0].ToString();
+    std::string result = helloUser(user);
     
     // return new 'Napi::String' value
     return Napi::String::New(env, result);
@@ -30,7 +31,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
 
 // register 'greet' module which calls 'Init' method
 // wraps NAPI_MODULE provided by node_api.h (N-API)
-// invoked when imprting Native Addon in JS program using require func
+// invoked when importing Native Addon in JS program using require func
 // greet - unique name specified as target_name in binding.gyp (should be label not string)
 // Init - above function
 NODE_API_MODULE(greet, Init)
