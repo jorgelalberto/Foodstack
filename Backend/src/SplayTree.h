@@ -454,4 +454,10 @@ public:
 
     // Calculations for Entering 3 Ingredients
     void CalculateFindMissing(vector<string> &keys); // Calculate and print the missing nutrients from diet
+
+    // return user diet
+    void UpdateUserDiet(const FoodData& food) {user_diet = user_diet + food;}
+
+// return user diet
+FoodData GetUserDiet() {return user_diet;}
 };

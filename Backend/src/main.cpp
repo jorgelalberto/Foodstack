@@ -3,9 +3,9 @@
 int main() {
     SplayTree splayTree("food.csv");
     cout << "Welcome to the Food Finder!" << endl
-    << "Enter an option:\n 1. Search for an ingredient's data\n"
+    << "Enter an option:\n1. Search for an ingredient's data\n"
        "2. Find missing ingredients from a diet\n"
-       "3. Exit\n";
+       "3. Search meal totals\n";
     int option;
     cin >> option;
     cin.ignore();
@@ -18,8 +18,8 @@ int main() {
         FoodData ing = *splayTree.NarrowDownSearch(input);
         cout << "You've entered: " << ing.Shrt_Desc << endl;
         std::vector<pair<string, double>> nutrients = ing.GetNutrientValues();
-        for (int i = 0; i < nutrients.size(); i++) {
-            cout << nutrients[i].first << ": " << nutrients[i].second << endl;
+        for (auto & nutrient : nutrients) {
+            cout << nutrient.first << ": " << nutrient.second << endl;
         }
     }
     else if (option == 2){
@@ -36,13 +36,23 @@ int main() {
             cout << "You've entered: " << ing.Shrt_Desc << endl;
             userIngredients.push_back(ing.Shrt_Desc);
         }
-
         cout << "Ingredients entered: \n";
         for (int i = 0; i < n; i++) {
             cout << i + 1 << ". " << userIngredients[i] << endl;
         }
         splayTree.CalculateFindMissing(userIngredients);
     }
-
+    else if (option == 3){
+        cout<< "Enter a meal (5 ingredients) \n";
+        vector<string> userIngredients;
+        for (int i = 0; i < 5; ++i) {
+            string input;
+            getline(cin, input);
+            FoodData ing = *splayTree.NarrowDownSearch(input);
+            cout << "You've entered: " << ing.Shrt_Desc << endl;
+           splayTree.UpdateUserDiet(ing);
+        }
+        splayTree.PrintUserDiet(splayTree.GetUserDiet());
+    }
     return 0;
 }

@@ -655,7 +655,7 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
         cout << lowest_three_nutrient << " ";
     }
     cout << endl;
-    // now find the 3 highest ingredients with these nutrients
+
     // now find the 3 highest ingredients with these nutrients
     vector<FoodData*> missing_from_diet;
     set<string> added_ingredients;
@@ -674,4 +674,5 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
         Print(*f);
     }
 }
+
 
