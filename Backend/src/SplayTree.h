@@ -19,6 +19,7 @@ struct FoodData {
     double Choline_Tot_mg = 0, Vit_B12_ug = 0, Vit_A_IU = 0, Vit_A_RAE = 0, Retinol_ug = 0, Alpha_Carot_ug = 0, Beta_Carot_ug = 0, Beta_Crypt_ug = 0, Lycopene_ug = 0, Lut_Zea_ug = 0;
     double Vit_E_mg = 0, Vit_D_ug = 0, Vit_D_IU = 0, Vit_K_ug = 0, FA_Sat_g = 0, FA_Mono_g = 0, FA_Poly_g = 0, Cholestrl_mg = 0, GmWt_1 = 0, GmWt_2 = 0, Refuse_Pct = 0;
     string GmWt_Desc1 = "", GmWt_Desc2 = "";
+    double FA_Tot = 0;
 
     // Overloaded + operator
     FoodData operator+(const FoodData &other) const {
@@ -401,7 +402,9 @@ private:
 public:
     SplayTree();
 
-    SplayTree(const std::string &filename);
+    explicit SplayTree(const std::string &filename);
+
+    ~SplayTree();
 
     // Insert a FoodData object into the splay tree
     void Insert(const FoodData &food_data);
@@ -456,8 +459,12 @@ public:
     void CalculateFindMissing(vector<string> &keys); // Calculate and print the missing nutrients from diet
 
     // return user diet
-    void UpdateUserDiet(const FoodData& food) {user_diet = user_diet + food;}
+    void UpdateUserDiet(const FoodData &food) { user_diet = user_diet + food; }
 
-// return user diet
-FoodData GetUserDiet() {return user_diet;}
+    // return user diet
+    FoodData GetUserDiet() { return user_diet; }
+
+    // Calculate User BMR
+    void CalculateUserBMR(const string& gender, int weight, int height, int age, const string& activity_level);
 };
+

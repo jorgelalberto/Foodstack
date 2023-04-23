@@ -13,6 +13,19 @@ SplayTree::SplayTree(const std::string &filename) {
     CreateUserDiet();
 }
 
+SplayTree::~SplayTree() {
+    std::function<void(Node *)> deleteNodes = [&](Node *node) {
+        if (node == nullptr) {
+            return;
+        }
+        deleteNodes(node->left);
+        deleteNodes(node->right);
+        delete node;
+    };
+
+    deleteNodes(root);
+}
+
 void SplayTree::CreateBalanced() {
     balanced_diet.Energ_Kcal = 2000;
     balanced_diet.Protein_g = 50;
@@ -57,6 +70,7 @@ void SplayTree::CreateBalanced() {
     balanced_diet.FA_Mono_g = 25;
     balanced_diet.FA_Poly_g = 25;
     balanced_diet.Cholestrl_mg = 300;
+    balanced_diet.FA_Tot = 20+25+25;
 }
 
 void SplayTree::CreateUserDiet() {
@@ -629,7 +643,6 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
 
     PrintUserDiet(user_diet);
 
-    // TODO: Calculate % nutrient missing from diet and get top 3 missing ingredients
     FoodData percent_missing = user_diet / balanced_diet;
     percent_missing = percent_missing * 100;
 
@@ -641,8 +654,8 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
 
     // Put the 3 lowest values in a vector of strings
     std::vector<std::string> lowest_three_nutrients;
-    cout << "Most missing nutrients: ";
-    for (auto & percent : percents) {
+    cout << "Your suggestions: ";
+    for (auto &percent: percents) {
         if (percent.first != "Refuse_Pct" && percent.first != "GmWt_2" && percent.first != "GmWt_1") {
             lowest_three_nutrients.push_back(percent.first);
         }
@@ -650,17 +663,16 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
             break;
         }
     }
-    for (const auto & lowest_three_nutrient : lowest_three_nutrients)
-    {
+    for (const auto &lowest_three_nutrient: lowest_three_nutrients) {
         cout << lowest_three_nutrient << " ";
     }
     cout << endl;
 
     // now find the 3 highest ingredients with these nutrients
-    vector<FoodData*> missing_from_diet;
+    vector<FoodData *> missing_from_diet;
     set<string> added_ingredients;
-    for (const string& i : lowest_three_nutrients) {
-        FoodData* max_nutrient_food = FindMaxNutrient(i);
+    for (const string &i: lowest_three_nutrients) {
+        FoodData *max_nutrient_food = FindMaxNutrient(i);
 
         // Check if the ingredient is already added
         if (added_ingredients.find(max_nutrient_food->Shrt_Desc) == added_ingredients.end()) {
@@ -670,9 +682,43 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
     }
 
     // Print missing ingredients
-    for(FoodData *f: missing_from_diet) {
+    for (FoodData *f: missing_from_diet) {
         Print(*f);
     }
 }
 
+// TODO: implement??
+void SplayTree::CalculateUserBMR(const string& gender, int weight, int height, int age, const string& activity_level) {
+    double bmr;
+    if (gender == "m") {
+        bmr = 66.47 + (6.23 * weight) + (12.7 * height) - (6.8 * age);
+    } else {
+        bmr = 655.1 + (4.35 * weight) + (4.7 * height) - (4.7 * age);
+    }
+    if (activity_level == "sedentary") {
+        bmr *= 1.2;
+    } else if (activity_level == "lightly active") {
+        bmr *= 1.375;
+    } else if (activity_level == "moderately active") {
+        bmr *= 1.55;
+    } else if (activity_level == "very active") {
+        bmr *= 1.725;
+    } else if (activity_level == "extra active") {
+        bmr *= 1.9;
+    }
 
+    double protein = bmr * 0.36;
+    double carbs = bmr * 0.44;
+    double fats = bmr * 0.3;
+
+    /*
+    balanced_diet.Energ_Kcal = bmr;
+    balanced_diet.Protein_g = protein/4;
+    balanced_diet.Carbohydrt_g = carbs/4;
+    balanced_diet.FA_Tot = fats/9; */
+
+    cout << "Your BMR is: " << bmr << " calories" << endl;
+    cout << "Your daily protein intake should be: " << fixed << setprecision(2) << protein / 4 << " grams" << endl;
+    cout << "Your daily carbs intake should be: " << fixed << setprecision(2) << carbs / 4 << " grams" << endl;
+    cout << "Your daily fats intake should be: " << fixed << setprecision(2) << fats / 9 << " grams" << endl;
+}
