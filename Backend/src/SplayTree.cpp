@@ -174,14 +174,15 @@ void SplayTree::ReadFile(const std::string &filename) {
 
         // Fill the struct with data
         getline(ss, food_data.NDB_No, ',');
-
         ReadQuotedField(ss, food_data.Shrt_Desc);
 
 #define READ_OR_DEFAULT(variable) \
 if (!getline(ss, line, ',')) { \
     food_data.variable = 0; \
 } else { \
-    if (line.empty()) { \
+    line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end()); \
+    if (line.empty() || \
+        !std::all_of(line.begin(), line.end(), [](char c) { return std::isdigit(c) || c == '.' || c == '-'; })) { \
         food_data.variable = 0; \
     } else { \
         try { \
@@ -241,7 +242,9 @@ if (!getline(ss, line, ',')) { \
         READ_OR_DEFAULT(FA_Mono_g)
         READ_OR_DEFAULT(FA_Poly_g)
         READ_OR_DEFAULT(Cholestrl_mg)
+        READ_OR_DEFAULT(GmWt_1)
         ReadQuotedField(ss, food_data.GmWt_Desc1);
+        READ_OR_DEFAULT(GmWt_2);
         ReadQuotedField(ss, food_data.GmWt_Desc2);
 
         if (!getline(ss, line, ',')) {
@@ -269,7 +272,7 @@ if (!getline(ss, line, ',')) { \
         }
 
 #undef READ_OR_DEFAULT
-        this->Insert(food_data); // Insert the food data into the heap
+        this->Insert(food_data); // Insert the food data into the tree
         lineNumber++; // Increment the line number
     }
 }
