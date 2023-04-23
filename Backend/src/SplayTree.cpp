@@ -70,7 +70,7 @@ void SplayTree::CreateBalanced() {
     balanced_diet.FA_Mono_g = 25;
     balanced_diet.FA_Poly_g = 25;
     balanced_diet.Cholestrl_mg = 300;
-    balanced_diet.FA_Tot = 20+25+25;
+    balanced_diet.FA_Tot = 20 + 25 + 25;
 }
 
 void SplayTree::CreateUserDiet() {
@@ -398,7 +398,6 @@ void SplayTree::SearchPartialMatchesHelper(Node *node, const std::string &key, s
     SearchPartialMatchesHelper(node->right, key, results);
 }
 
-// Recursive helper function to search for a node with the given key
 SplayTree::Node *SplayTree::SearchHelper(Node *root, const std::string &key) {
     if (!root || root->data.Shrt_Desc == key) {
         return root;
@@ -462,12 +461,6 @@ FoodData *SplayTree::FindMaxNutrient(const std::string &nutrient) {
     return max_food_data;
 }
 
-SplayTree::Node *SplayTree::SearchNode(Node *root, const std::string &key) {
-    root = SearchHelper(root, key);
-    return root;
-}
-
-// Delete a FoodData object based on a given key (e.g., NDB_No or Shrt_Desc)
 bool SplayTree::Delete(const std::string &key) {
     if (!root) {
         return false;
@@ -486,7 +479,6 @@ bool SplayTree::Delete(const std::string &key) {
     return true;
 }
 
-// Perform a right rotation on the given node x
 SplayTree::Node *SplayTree::RightRotate(Node *x) {
     Node *y = x->left;
     x->left = y->right;
@@ -494,7 +486,6 @@ SplayTree::Node *SplayTree::RightRotate(Node *x) {
     return y;
 }
 
-// Perform a left rotation on the given node x
 SplayTree::Node *SplayTree::LeftRotate(Node *x) {
     Node *y = x->right;
     x->right = y->left;
@@ -502,7 +493,6 @@ SplayTree::Node *SplayTree::LeftRotate(Node *x) {
     return y;
 }
 
-// Join two splay trees with all elements in the left tree having smaller keys than elements in the right tree
 SplayTree::Node *SplayTree::Join(Node *left, Node *right) {
     if (!left) {
         return right;
@@ -525,29 +515,6 @@ SplayTree::Node *SplayTree::Join(Node *left, Node *right) {
     return left;
 }
 
-// Split the splay tree into two trees: left tree contains all elements with keys smaller than the given key,
-// and the right tree contains all elements with keys greater than or equal to the given key
-void SplayTree::Split(Node *root, const std::string &key, Node *&left, Node *&right) {
-    if (!root) {
-        left = right = nullptr;
-        return;
-    }
-
-    // Splay the root node based on the given key
-    root = SearchHelper(root, key);
-
-    if (root->data.NDB_No < key) {
-        left = root;
-        right = root->right;
-        left->right = nullptr;
-    } else {
-        right = root;
-        left = root->left;
-        right->left = nullptr;
-    }
-}
-
-// Splay the node with the given key to the root of the splay tree rooted at the given root
 SplayTree::Node *SplayTree::Splay(Node *root, const std::string &key) {
     if (!root) {
         return nullptr;
@@ -613,13 +580,13 @@ void SplayTree::PrintInOrderHelper(const Node *node) const {
 }
 
 void SplayTree::Print(const FoodData &food) {
-    int sum_fats = food.FA_Sat_g + food.FA_Mono_g + food.FA_Poly_g;
+    double sum_fats = food.FA_Sat_g + food.FA_Mono_g + food.FA_Poly_g;
     cout << "Ingredient: " << food.Shrt_Desc << " Calories: " << food.Energ_Kcal <<
          " Protein: " << food.Protein_g << " Carbs: " << food.Carbohydrt_g << " Fats: " << sum_fats << endl;
 }
 
 void SplayTree::PrintUserDiet(const FoodData &food) {
-    int sum_fats = food.FA_Sat_g + food.FA_Mono_g + food.FA_Poly_g;
+    double sum_fats = food.FA_Sat_g + food.FA_Mono_g + food.FA_Poly_g;
     cout << "Your daily intake: " << food.Shrt_Desc << " Calories: " << food.Energ_Kcal <<
          " Protein: " << food.Protein_g << " Carbs: " << food.Carbohydrt_g << " Fats: " << sum_fats << endl;
 }
@@ -687,13 +654,12 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
     }
 }
 
-// TODO: implement??
-void SplayTree::CalculateUserBMR(const string& gender, int weight, int height, int age, const string& activity_level) {
+void SplayTree::CalculateUserBMR(const string &gender, int weight, int height, int age, const string &activity_level) {
     double bmr;
     if (gender == "m") {
-        bmr = 66.47 + (6.23 * weight) + (12.7 * height) - (6.8 * age);
+        bmr = 66.47 + ((13.75*0.454) * weight) + ((5.003*2.54) * height) - (6.755 * age);
     } else {
-        bmr = 655.1 + (4.35 * weight) + (4.7 * height) - (4.7 * age);
+        bmr = 655.1 + ((9.563*0.454) * weight) + ((1.85*2.54) * height) - (4.676 * age);
     }
     if (activity_level == "sedentary") {
         bmr *= 1.2;
@@ -711,6 +677,7 @@ void SplayTree::CalculateUserBMR(const string& gender, int weight, int height, i
     double carbs = bmr * 0.44;
     double fats = bmr * 0.3;
 
+    // TODO: - maybe imnplement this - for saving the balanced diet and calculating the missing nutrients.
     /*
     balanced_diet.Energ_Kcal = bmr;
     balanced_diet.Protein_g = protein/4;

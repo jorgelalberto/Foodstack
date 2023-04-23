@@ -400,71 +400,54 @@ private:
     void PrintInOrderHelper(const Node *node) const;
 
 public:
-    SplayTree();
 
-    explicit SplayTree(const std::string &filename);
+    // CONSTRUCTORS AND DESTRUCTOR
+    SplayTree(); // default constructor
+    explicit SplayTree(const std::string &filename); // constructor
+    ~SplayTree(); // destructor
 
-    ~SplayTree();
+    // CREATE USER DIET AND BALANCED DIET, READ FILE
+    void ReadFile(const std::string &filename); // reads in the file
+    static bool ReadQuotedField(std::stringstream &ss, std::string &field); // helper function for ReadFile
+    void CreateBalanced(); // create default balanced diet
+    void CreateUserDiet(); // create default user diet
 
-    // Insert a FoodData object into the splay tree
-    void Insert(const FoodData &food_data);
+    // INSERTION AND DELETION
+    void Insert(const FoodData &food_data); // Insert a FoodData object into the splay tree
+    Node *InsertHelper(Node *root, const FoodData &food_data); // helper for Insert
+    bool Delete(const std::string &key); // Delete a FoodData object based on Shrt_Desc
 
-    // Search for a FoodData object based on a given key (e.g., NDB_No or Shrt_Desc)
-    FoodData *Search(const std::string &key); // return a FoodData
-    Node *SearchNode(Node *root, const std::string &key); // return a node
-    void SearchPartialMatchesHelper(Node *node, const std::string &key, std::vector<FoodData *> &results); // helper
-    vector<FoodData *> SearchPartialMatches(const std::string &key,
-                                            const std::vector<FoodData *> &current_results); // Return a vector of matches
-    FoodData *NarrowDownSearch(const std::string &key);
-
-    FoodData *FindMaxNutrient(const std::string &nutrient);
-
-    // Delete a FoodData object based on a given key (e.g., NDB_No or Shrt_Desc)
-    bool Delete(const std::string &key);
-
-    void ReadFile(const std::string &filename);
-
-    void CreateBalanced();
-
-    void CreateUserDiet();
-
-    bool ReadQuotedField(std::stringstream &ss, std::string &field);
+    // SEARCHES
+    FoodData *Search(const std::string &key); // Search for a FoodData object based on name
+    Node *SearchHelper(Node *root, const std::string &key); // helper for Search
+    void SearchPartialMatchesHelper(Node *node, const std::string &key, std::vector<FoodData *> &results); // helper for SearchPartialMatches
+    vector<FoodData *> SearchPartialMatches
+    (const std::string &key,const std::vector<FoodData *> &current_results); // helper to return a vector of narrowed matches
+    FoodData *NarrowDownSearch(const std::string &key); // narrows down the search results
 
     // Additional helper functions for splay tree operations
-    Node *NewNode(const FoodData &food_data);
+    static Node *NewNode(const FoodData &food_data); // Creates a new Node
+    static Node *RightRotate(Node *x); // Perform a right rotation on the given node x
+    static Node *LeftRotate(Node *x); // Perform a left rotation on the given node x
+    Node *Splay(Node *root, const std::string &key); // Splay the node with the given key to the root of the splay tree rooted at the given root
+    Node *Join(Node *left, Node *right); // Join two splay trees with all elements in the left tree having smaller keys than elements in the right tree
 
-    Node *RightRotate(Node *x);
+    // PRINTING
+    void PrintInOrder() const; // Print the splay tree inorder traversal(entire list)
+    static void Print(const FoodData &food); // Print a single FoodData item
+    static void PrintUserDiet(const FoodData &food); // Print the user's diet
+    static void PrintSearchResults(vector<FoodData *> &results); // Print the search results
 
-    Node *LeftRotate(Node *x);
-
-    Node *Splay(Node *root, const std::string &key);
-
-    Node *InsertHelper(Node *root, const FoodData &food_data);
-
-    Node *SearchHelper(Node *root, const std::string &key);
-
-    Node *Join(Node *left, Node *right);
-
-    void Split(Node *root, const std::string &key, Node *&left, Node *&right);
-
-    void PrintInOrder() const; // Print the splay tree in order (entire list)
-
-    void Print(const FoodData &food); // Print a single FoodData item
-
-    void PrintUserDiet(const FoodData &food);
-
-    void PrintSearchResults(vector<FoodData *> &results); // Print the search results
-
-    // Calculations for Entering 3 Ingredients
+    // Calculations (top 3 missing (%)
     void CalculateFindMissing(vector<string> &keys); // Calculate and print the missing nutrients from diet
+    FoodData *FindMaxNutrient(const std::string &nutrient); // finds the food with the highest nutrient value
 
-    // return user diet
-    void UpdateUserDiet(const FoodData &food) { user_diet = user_diet + food; }
+    // User Diet Calculations
+    void UpdateUserDiet(const FoodData &food) { user_diet = user_diet + food; } // Sets User Diet
+    FoodData GetUserDiet() { return user_diet; } // Gets User Diet
 
-    // return user diet
-    FoodData GetUserDiet() { return user_diet; }
+    // BMR Calculations
+    static void CalculateUserBMR(const string &gender, int weight, int height, int age, const string &activity_level); // Calculate User BMR
 
-    // Calculate User BMR
-    void CalculateUserBMR(const string& gender, int weight, int height, int age, const string& activity_level);
 };
 

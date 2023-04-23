@@ -50,23 +50,26 @@ int main() {
             cout << "You've entered: " << ing.Shrt_Desc << endl;
             splayTree.UpdateUserDiet(ing);
         }
-        splayTree.PrintUserDiet(splayTree.GetUserDiet());
-    }
-    else if (option == 4) {
-        int age, weight, height;
+        SplayTree::PrintUserDiet(splayTree.GetUserDiet());
+    } else if (option == 4) {
+
+        int weight, height, age;
         string gender, activity;
+
         cout << "Enter your gender(m or f): \n";
         cin >> gender;
-        cout << "Enter your age: \n";
-        cin >> age;
         cout << "Enter your weight (in pounds): \n";
         cin >> weight;
         cout << "Enter your height (in inches): \n";
         cin >> height;
-        cout << "Enter your activity level (sedentary, lightly active, moderately active, very active, extra active): \n";
+        cout << "Enter your age: \n";
+        cin >> age;
+
+        cout
+                << "Enter your activity level (sedentary, lightly active, moderately active, very active, extra active): \n";
         cin >> activity;
 
-        splayTree.CalculateUserBMR(gender, age, weight, height, activity);
+        SplayTree::CalculateUserBMR(gender, weight, height, age, activity);
     }
     return 0;
 }
