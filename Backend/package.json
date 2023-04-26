@@ -1,12 +1,14 @@
 {
-  "name": "greet",
+  "name": "dsaproj3",
   "version": "1.0.0",
   "description": "my first node.js project with medium article runthrough",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "build": "browserify index.js -o bundle.js"
   },
+  "gypfile": true,
   "author": "Jorge L. Alberto",
   "license": "ISC",
   "dependencies": {

@@ -1,8 +1,9 @@
 /* When the user clicks on the button,
 toggle between hiding and showing the dropdown content */
+
 function myFunction() {
-    document.getElementById("myDropdown").classList.toggle("show");
-  }
+  document.getElementById("myDropdown").classList.toggle("show");
+}
   
 function filterFunction() {
   var input, filter, ul, li, a, i;
@@ -35,4 +36,10 @@ function addIngredient(id) {
 
 function test() {
   alert("Hello! I am an alert box!!");
+  console.log('exports : ', greetModule);
+  console.log('greetModule.greetHello() : ', greetModule.greetHello("Hi"));
+}
+
+function sendInfoToCplusplus() {
+  var input = "sendToC++"
 }

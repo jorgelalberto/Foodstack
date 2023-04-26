@@ -1,18 +1,100 @@
 #include "SplayTree.h"
 
-SplayTree::SplayTree() {
+// Description: - callback method when module is registered w/Node.js
+//              - calls constructor
+//              - sets export keys and values, and returns exports
+// Call Flow: first_js_module_use -> Init
+Napi::Object SplayTree::Init(Napi::Env env, Napi::Object exports) {
+    // returns constructor
+    Napi::Function func =
+        DefineClass(env,
+                  "SplayTree",
+                  {InstanceMethod("searchnapi", &SplayTree::SearchNapi),
+                   InstanceMethod("searchpartialmatchesnapi", &SplayTree::SearchPartialMatchesNapi)});
+
+    Napi::FunctionReference* constructor = new Napi::FunctionReference();
+    *constructor = Napi::Persistent(func);
+    env.SetInstanceData(constructor);
+
+    exports.Set("SplayTree", func);
+    return exports;
+}
+
+// Description: - constructor
+//              - reads food.csv
+//              - creates balanced diet
+//              - creates user diet
+// Call Flow: first_js_module_use -> Init -> this_constructor
+SplayTree::SplayTree(const Napi::CallbackInfo& info)
+    : Napi::ObjectWrap<SplayTree>(info) {
+    Napi::Env env = info.Env();
+    int length = info.Length();
+
+    // Error Handling
+    if (length > 0) {
+        Napi::TypeError::New(env, "Constructor does not take in value(s)").ThrowAsJavaScriptException();
+        return;
+    }
+
     root = nullptr;
+    ReadFile("food.csv");
     CreateBalanced();
     CreateUserDiet();
 }
 
-SplayTree::SplayTree(const std::string &filename) {
-    root = nullptr;
-    ReadFile(filename);
-    CreateBalanced();
-    CreateUserDiet();
+Napi::Value SearchNapi(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    std::string food = (std::string) info[0].ToString();
+
+    this->dummy = 1;
+    // Search for food's data
+    // struct -> vector<pair<string, double>> -> napi array of FoodData's values (aka nutritional info)
+    FoodData* result = Search(food);
+    std::vector<pair<std::string,double>> resultVec = (*result).GetNutrientValues();
+    Napi::Array resultNapi = Napi::Array::New(env, resultVec.size());
+
+    // populate napi array
+    for (int i=0; i < resultVec.size(); i++)
+        resultNapi[i] = Napi::Number::New(env, resultVec[i].second);
+
+    return resultNapi;
 }
 
+Napi::Value SearchPartialMatchesNapi(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    std::string typed = (std::string) info[0].ToString();
+
+    // search for typed letter's partial matches
+    // ex: burg is a partial match for burger
+    // vector<FoodData *> -> napi array of FoodData's description (aka food name)
+    // FIXME: currently passing in empty vector, ideally pass in vector of current results
+    std::vector<FoodData *> result = SearchPartialMatches(typed, result);
+    Napi::Array resultNapi = Napi::Array::New(env, result.size());
+
+    // populate napi array
+    for (int i=0; i < result.size(); i++) {
+        std::string foodDescription = result[i].Shrt_Desc;
+        resultNapi[i] = Napi::String::New(env, foodDescription);
+    }
+
+    return resultNapi;
+}
+
+/*
+FIXME
+Napi::Value CalculateFindMissingNapi(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+    int length = info.Length();
+
+    // Error Handling
+    if (length > 0) {
+        Napi::TypeError::New(env, "CalculateFindMissingNapi does not take in value(s)").ThrowAsJavaScriptException();
+        return;
+    }
+}
+*/
+
+// Call Flow: first_js_module_use -> Init -> Constructor -> CreateBalanced
 void SplayTree::CreateBalanced() {
     balanced_diet.Energ_Kcal = 2000;
     balanced_diet.Protein_g = 50;
@@ -59,6 +141,7 @@ void SplayTree::CreateBalanced() {
     balanced_diet.Cholestrl_mg = 300;
 }
 
+// Call Flow: first_js_module_use -> Init -> Constructor -> CreateUserDiet
 void SplayTree::CreateUserDiet() {
     user_diet.Energ_Kcal = 0;
     user_diet.Protein_g = 0;
@@ -105,6 +188,7 @@ void SplayTree::CreateUserDiet() {
     user_diet.Cholestrl_mg = 0;
 }
 
+// Commmand Line Interface, NOT Server Interface
 bool SplayTree::ReadQuotedField(std::stringstream &ss, std::string &field) {
     field.clear();
     char c;
@@ -140,6 +224,8 @@ bool SplayTree::ReadQuotedField(std::stringstream &ss, std::string &field) {
     return !field.empty();
 }
 
+// Description: Reads food.csv file while storing contents in splay tree
+// Call Flow: first_js_module_use -> Init -> Constructor -> ReadFile
 void SplayTree::ReadFile(const std::string &filename) {
 
     std::vector<FoodData> food_data_list;
@@ -255,11 +341,12 @@ if (!getline(ss, line, ',')) { \
         }
 
 #undef READ_OR_DEFAULT
-        this->Insert(food_data); // Insert the food data into the heap
+        Insert(food_data); // Insert the food data into the SplayTree
         lineNumber++; // Increment the line number
     }
 }
 
+//Insert a FoodData object into the splay tree
 void SplayTree::Insert(const FoodData &food_data) {
     root = InsertHelper(root, food_data);
 }
@@ -302,7 +389,8 @@ SplayTree::Node *SplayTree::NewNode(const FoodData &food_data) {
     return node;
 }
 
-FoodData *SplayTree::Search(const string &key) {
+/*Returns food data*/
+FoodData *SplayTree::Search(const std::string &key) {
     // Search for a FoodData object based on a given key (Shrt_Desc)
     root = SearchHelper(root, key);
     if (root && root->data.Shrt_Desc == key) {
@@ -311,6 +399,7 @@ FoodData *SplayTree::Search(const string &key) {
     return nullptr;
 }
 
+// Call Flow: CalculateFindMissing -> NarrowDownSearch
 FoodData *SplayTree::NarrowDownSearch(const std::string &key) {
     std::vector<FoodData *> results = SearchPartialMatches(key, {});
     std::vector<FoodData *> prev_results;
@@ -344,8 +433,7 @@ FoodData *SplayTree::NarrowDownSearch(const std::string &key) {
     return nullptr;
 }
 
-std::vector<FoodData *>
-SplayTree::SearchPartialMatches(const std::string &key, const std::vector<FoodData *> &current_results) {
+std::vector<FoodData *> SplayTree::SearchPartialMatches(const std::string &key, const std::vector<FoodData *> &current_results) {
     std::vector<FoodData *> results;
     std::string key_upper = key;
     std::transform(key_upper.begin(), key_upper.end(), key_upper.begin(), ::toupper);
@@ -617,8 +705,9 @@ void SplayTree::PrintSearchResults(vector<FoodData *> &results) {
     }
 }
 
-void SplayTree::CalculateFindMissing(vector<string> &keys) {
-    for (const string &key: keys) {
+// Calculate and print the missing nutrients from diet
+void SplayTree::CalculateFindMissing(vector<std::string> &keys) {
+    for (const std::string &key: keys) {
         FoodData *temp = NarrowDownSearch(key);
         if (temp == nullptr) {
             cout << "Ingredient not found" << endl;
@@ -633,7 +722,7 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
     FoodData percent_missing = user_diet / balanced_diet;
     percent_missing = percent_missing * 100;
 
-    vector<pair<string, double>> percents = percent_missing.GetNutrientValues();
+    vector<pair<std::string, double>> percents = percent_missing.GetNutrientValues();
     // Sort the percents vector by lowest value first
     std::sort(percents.begin(), percents.end(), [](const auto &a, const auto &b) {
         return a.second < b.second;
@@ -658,8 +747,8 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
     // now find the 3 highest ingredients with these nutrients
     // now find the 3 highest ingredients with these nutrients
     vector<FoodData*> missing_from_diet;
-    set<string> added_ingredients;
-    for (const string& i : lowest_three_nutrients) {
+    set<std::string> added_ingredients;
+    for (const std::string& i : lowest_three_nutrients) {
         FoodData* max_nutrient_food = FindMaxNutrient(i);
 
         // Check if the ingredient is already added

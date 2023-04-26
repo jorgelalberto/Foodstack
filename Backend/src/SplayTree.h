@@ -7,18 +7,22 @@
 #include <string>
 #include <map>
 #include <set>
+#include <algorithm>
+#include <napi.h>
 
 using namespace std;
 
 struct FoodData {
-    string NDB_No = "";
-    string Shrt_Desc = "";
+    // nutrient database # of food
+    std::string NDB_No = "";
+    // short description of food
+    std::string Shrt_Desc = "";
     double Water_g = 0, Energ_Kcal = 0, Protein_g = 0, Lipid_Tot_g = 0, Ash_g = 0, Carbohydrt_g = 0, Fiber_TD_g = 0, Sugar_Tot_g = 0;
     double Calcium_mg = 0, Iron_mg = 0, Magnesium_mg = 0, Phosphorus_mg = 0, Potassium_mg = 0, Sodium_mg = 0, Zinc_mg = 0, Copper_mg = 0, Manganese_mg = 0, Selenium_ug = 0;
     double Vit_C_mg = 0, Thiamin_mg = 0, Riboflavin_mg = 0, Niacin_mg = 0, Panto_Acid_mg = 0, Vit_B6_mg = 0, Folate_Tot_ug = 0, Folic_Acid_ug = 0, Food_Folate_ug = 0, Folate_DFE_ug = 0;
     double Choline_Tot_mg = 0, Vit_B12_ug = 0, Vit_A_IU = 0, Vit_A_RAE = 0, Retinol_ug = 0, Alpha_Carot_ug = 0, Beta_Carot_ug = 0, Beta_Crypt_ug = 0, Lycopene_ug = 0, Lut_Zea_ug = 0;
     double Vit_E_mg = 0, Vit_D_ug = 0, Vit_D_IU = 0, Vit_K_ug = 0, FA_Sat_g = 0, FA_Mono_g = 0, FA_Poly_g = 0, Cholestrl_mg = 0, GmWt_1 = 0, GmWt_2 = 0, Refuse_Pct = 0;
-    string GmWt_Desc1 = "", GmWt_Desc2 = "";
+    std::string GmWt_Desc1 = "", GmWt_Desc2 = "";
 
     // Overloaded + operator
     FoodData operator+(const FoodData &other) const {
@@ -276,7 +280,7 @@ struct FoodData {
     }
 
     // Return one nutrient value for a given nutrient name
-    double GetValue(const string &nutrient) const {
+    double GetValue(const std::string &nutrient) const {
         if (nutrient == "Energ_Kcal") return Energ_Kcal;
         if (nutrient == "Protein_g") return Protein_g;
         if (nutrient == "Lipid_Tot_g") return Lipid_Tot_g;
@@ -329,7 +333,7 @@ struct FoodData {
     }
 
     // Return a vector of nutrient values
-    std::vector<pair<string, double>> GetNutrientValues() {
+    std::vector<pair<std::string, double>> GetNutrientValues() {
         return {
                 {"Water_g",        Water_g},
                 {"Energ_Kcal",     Energ_Kcal},
@@ -384,74 +388,69 @@ struct FoodData {
     }
 };
 
-class SplayTree {
+class SplayTree : public Napi::ObjectWrap<SplayTree>{
 
 private:
+    /*Server Private*/
     struct Node {
         FoodData data;
         Node *left;
         Node *right;
     };
-
     Node *root;
-    FoodData balanced_diet; // an average balanced diet
-    FoodData user_diet; // total sum of user's food intake
-    void PrintInOrderHelper(const Node *node) const;
-
-public:
-    SplayTree();
-
-    SplayTree(const std::string &filename);
-
-    // Insert a FoodData object into the splay tree
-    void Insert(const FoodData &food_data);
-
-    // Search for a FoodData object based on a given key (e.g., NDB_No or Shrt_Desc)
-    FoodData *Search(const std::string &key); // return a FoodData
+    int dummy;
+    // an average balanced diet
+    FoodData balanced_diet;
+    // total sum of user's food intake
+    FoodData user_diet;
     Node *SearchNode(Node *root, const std::string &key); // return a node
-    void SearchPartialMatchesHelper(Node *node, const std::string &key, std::vector<FoodData *> &results); // helper
-    vector<FoodData *> SearchPartialMatches(const std::string &key,
-                                            const std::vector<FoodData *> &current_results); // Return a vector of matches
-    FoodData *NarrowDownSearch(const std::string &key);
-
-    FoodData *FindMaxNutrient(const std::string &nutrient);
-
-    // Delete a FoodData object based on a given key (e.g., NDB_No or Shrt_Desc)
-    bool Delete(const std::string &key);
-
+    void Insert(const FoodData &food_data);
     void ReadFile(const std::string &filename);
-
-    void CreateBalanced();
-
     void CreateUserDiet();
-
-    bool ReadQuotedField(std::stringstream &ss, std::string &field);
-
+    void CreateBalanced();
     // Additional helper functions for splay tree operations
     Node *NewNode(const FoodData &food_data);
-
     Node *RightRotate(Node *x);
-
     Node *LeftRotate(Node *x);
-
     Node *Splay(Node *root, const std::string &key);
-
     Node *InsertHelper(Node *root, const FoodData &food_data);
-
     Node *SearchHelper(Node *root, const std::string &key);
-
     Node *Join(Node *left, Node *right);
-
     void Split(Node *root, const std::string &key, Node *&left, Node *&right);
-
-    void PrintInOrder() const; // Print the splay tree in order (entire list)
-
-    void Print(const FoodData &food); // Print a single FoodData item
-
+    void SearchPartialMatchesHelper(Node *node, const std::string &key, std::vector<FoodData *> &results);
+    FoodData *NarrowDownSearch(const std::string &key);
+    // Print Functions (Non Server/Napi Interfaces ∴ NOT called)
+    void PrintInOrder() const; // splay tree in order (entire list)
+    void PrintInOrderHelper(const Node *node) const;
+    void Print(const FoodData &food); // single food item
     void PrintUserDiet(const FoodData &food);
+    void PrintSearchResults(vector<FoodData *> &results);
+    // Other (Non Server/Napi Interfaces ∴ NOT called)
+    bool ReadQuotedField(std::stringstream &ss, std::string &field);
+    // Other (No Current Website Use)
+    FoodData *FindMaxNutrient(const std::string &nutrient);
+    bool Delete(const std::string &key); // Delete a FoodData object based on a given key (e.g., NDB_No or Shrt_Desc)
 
-    void PrintSearchResults(vector<FoodData *> &results); // Print the search results
 
-    // Calculations for Entering 3 Ingredients
-    void CalculateFindMissing(vector<string> &keys); // Calculate and print the missing nutrients from diet
+
+    /*Server Almost Public - directly called by Napi functions*/
+    // Search for a FoodData object based on a given key (e.g., NDB_No or Shrt_Desc)
+    FoodData *Search(const std::string &key);
+    vector<FoodData *> SearchPartialMatches(const std::string &key,
+                                            const std::vector<FoodData *> &current_results); // Return a vector of matches
+    void CalculateFindMissing(vector<std::string> &keys);
+
+
+
+    /*Server Public*/
+    Napi::Value SearchNapi(const Napi::CallbackInfo& info);
+    Napi::Value SearchPartialMatchesNapi(const Napi::CallbackInfo& info);
+    //Napi::Value CalculateFindMissingNapi(const Napi::CallbackInfo& info); FIXME
+
+
+
+public:
+    static Napi::Object Init(Napi::Env env, Napi::Object exports);
+    SplayTree(const Napi::CallbackInfo& info);
+
 };

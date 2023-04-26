@@ -1,16 +1,15 @@
-// greet module in this case
-//const addon = require('bindings')('greet'); // import 'greet.node'
-//exports.hello = addon.greetHello;
-
 const greetModule = require('./build/Release/greet.node');
 console.log('exports : ', greetModule);
 console.log();
-console.log('greetModule.greetHello() : ', greetModule.greetHello("Hi"));
+console.log('greetModule.greetHello() : ', greetModule.greetHello(""));
 console.log()
 
+// var addon = require('bindings')('addon')
+// var splayTree = addon.SplayTree(filename)
 
 
-// Imports
+
+// Imports & Const Vars
 const express = require('express')
 const app = express()
 const port = 3000
@@ -18,6 +17,9 @@ const path = require('path');
 
 
 
+// Express Available Use Files
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, '../Frontend')));
 app.use('/CSS', express.static(path.join(__dirname, '../Frontend/CSS')));
 app.use('/JS', express.static(path.join(__dirname, '../Frontend/JS')));
@@ -34,6 +36,13 @@ app.get('/homePage', function (req, res) {
 });
 app.get('/aboutUs', function (req, res) {
     res.sendFile(frontendPath + '/aboutUs.html');
+});
+
+app.post('/homePage/search', function (req, res) {
+    let payload = req.body.payload.trim();
+    //let search = await splayTree.NarrowDownSearch(payload)
+    console.log(payload);
+    //res.send({payload: search});
 });
 
 
