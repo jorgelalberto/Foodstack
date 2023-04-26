@@ -3,9 +3,10 @@
 int main() {
     SplayTree splayTree("food.csv");
     bool running = true;
+
+    cout << "Welcome to the Food Finder!" << endl;
     while (running) {
-        cout << "Welcome to the Food Finder!" << endl
-             << "Enter an option:\n"
+        cout << "Enter an option:\n"
                 "1. Search for an ingredient's data\n"
                 "2. Find missing ingredients from a diet\n"
                 "3. Search meal totals\n"
@@ -16,8 +17,9 @@ int main() {
         int option;
         cin >> option;
         cin.ignore();
+        bool select = true;
 
-        if (option == 1) {
+        if (option == 1 && select) {
             cout << "Enter an ingredient: ";
             string input;
             getline(cin, input);
@@ -27,7 +29,8 @@ int main() {
             for (auto &nutrient: nutrients) {
                 cout << nutrient.first << ": " << nutrient.second << endl;
             }
-        } else if (option == 2) {
+            select = false;
+        } else if (option == 2 && select) {
             int n;
             cout << "Enter how many Ingredients : " << endl;
             cin >> n;
@@ -46,8 +49,8 @@ int main() {
                 cout << i + 1 << ". " << userIngredients[i] << endl;
             }
             splayTree.CalculateFindMissing(userIngredients);
-
-        } else if (option == 3) {
+            select = false;
+        } else if (option == 3 && select) {
             cout << "Enter a meal (5 ingredients) \n";
             vector<string> userIngredients;
             for (int i = 0; i < 5; ++i) {
@@ -58,7 +61,8 @@ int main() {
                 splayTree.UpdateUserDiet(ing);
             }
             SplayTree::PrintUserDiet(splayTree.GetUserDiet());
-        } else if (option == 4) {
+            select = false;
+        } else if (option == 4 && select) {
 
             int weight, height, age;
             string gender, activity;
@@ -77,11 +81,12 @@ int main() {
             cin >> activity;
 
             SplayTree::CalculateUserBMR(gender, weight, height, age, activity);
-        } else if (option == 5) {
+            select = false;
+        } else if (option == 5 && select) {
             splayTree.PrintInOrder();
+            select = false;
         } else {
             running = false;
-            //exit;
         }
     }
     return 0;
