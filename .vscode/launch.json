@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+       "type": "cppdbg",
+       "request": "launch",
+       "name": "Launch Program",
+       "cwd":"${workspaceFolder}",
+       "preLaunchTask": "npm: rebuild:dev",
+       "program": "C:\\Users\\jgalb\\Desktop\\College\\Code\\COP3530\\DSAProj3\\Backend\\node_modules\\debug\\src",
+       "args": [
+          "C:\\Users\\jgalb\\Desktop\\College\\Code\\COP3530\\DSAProj3\\Backend\\index.js"
+       ]
+    }]
+  }

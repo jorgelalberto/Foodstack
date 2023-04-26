@@ -1,7 +1,7 @@
 #include "SplayTree.h"
 
 int main() {
-    SplayTree splayTree("food.csv");
+    SplayTree splayTree();
     cout << "Welcome to the Food Finder!" << endl
     << "Enter an option:\n 1. Search for an ingredient's data\n"
        "2. Find missing ingredients from a diet\n"

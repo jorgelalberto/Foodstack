@@ -2,7 +2,7 @@
 {
   "target_defaults": {
     "cflags": [],
-    "default_configuration": "Release",
+    "default_configuration": "Debug",
     "defines": [],
     "include_dirs": [],
     "libraries": [],
@@ -403,6 +403,16 @@
     "want_separate_host_toolset": 0,
     "nodedir": "C:\\Users\\jgalb\\AppData\\Local\\node-gyp\\Cache\\18.16.0",
     "standalone_static_library": 1,
-    "msbuild_path": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\MSBuild\\Current\\Bin\\MSBuild.exe"
+    "msbuild_path": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\MSBuild\\Current\\Bin\\MSBuild.exe",
+    "cache": "C:\\Users\\jgalb\\AppData\\Local\\npm-cache",
+    "globalconfig": "C:\\Users\\jgalb\\AppData\\Roaming\\npm\\etc\\npmrc",
+    "global_prefix": "C:\\Users\\jgalb\\AppData\\Roaming\\npm",
+    "init_module": "C:\\Users\\jgalb\\.npm-init.js",
+    "local_prefix": "C:\\Users\\jgalb\\Desktop\\College\\Code\\COP3530\\DSAProj3\\Backend",
+    "metrics_registry": "https://registry.npmjs.org/",
+    "node_gyp": "C:\\Program Files\\nodejs\\node_modules\\npm\\node_modules\\node-gyp\\bin\\node-gyp.js",
+    "prefix": "C:\\Users\\jgalb\\AppData\\Roaming\\npm",
+    "userconfig": "C:\\Users\\jgalb\\.npmrc",
+    "user_agent": "npm/9.5.1 node/v18.16.0 win32 x64 workspaces/false"
   }
 }

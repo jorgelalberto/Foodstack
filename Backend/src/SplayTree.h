@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MYOBJECT_H
+#define MYOBJECT_H
 
 #include <iostream>
 #include <fstream>
@@ -8,9 +9,9 @@
 #include <map>
 #include <set>
 #include <algorithm>
+#include <utility>
 #include <napi.h>
 
-using namespace std;
 
 struct FoodData {
     // nutrient database # of food
@@ -333,7 +334,8 @@ struct FoodData {
     }
 
     // Return a vector of nutrient values
-    std::vector<pair<std::string, double>> GetNutrientValues() {
+    std::vector<std::pair<std::string, double>> GetNutrientValues() {
+        std::cout << "getnutrientvals" <<std::endl;
         return {
                 {"Water_g",        Water_g},
                 {"Energ_Kcal",     Energ_Kcal},
@@ -397,8 +399,8 @@ private:
         Node *left;
         Node *right;
     };
+    int dummy = 1;
     Node *root;
-    int dummy;
     // an average balanced diet
     FoodData balanced_diet;
     // total sum of user's food intake
@@ -424,7 +426,7 @@ private:
     void PrintInOrderHelper(const Node *node) const;
     void Print(const FoodData &food); // single food item
     void PrintUserDiet(const FoodData &food);
-    void PrintSearchResults(vector<FoodData *> &results);
+    void PrintSearchResults(std::vector<FoodData *> &results);
     // Other (Non Server/Napi Interfaces ∴ NOT called)
     bool ReadQuotedField(std::stringstream &ss, std::string &field);
     // Other (No Current Website Use)
@@ -436,15 +438,16 @@ private:
     /*Server Almost Public - directly called by Napi functions*/
     // Search for a FoodData object based on a given key (e.g., NDB_No or Shrt_Desc)
     FoodData *Search(const std::string &key);
-    vector<FoodData *> SearchPartialMatches(const std::string &key,
+    std::vector<FoodData *> SearchPartialMatches(const std::string &key,
                                             const std::vector<FoodData *> &current_results); // Return a vector of matches
-    void CalculateFindMissing(vector<std::string> &keys);
+    //void CalculateFindMissing(std::vector<std::string> &keys);
 
 
 
     /*Server Public*/
     Napi::Value SearchNapi(const Napi::CallbackInfo& info);
     Napi::Value SearchPartialMatchesNapi(const Napi::CallbackInfo& info);
+    Napi::Value DummyNapi(const Napi::CallbackInfo& info);
     //Napi::Value CalculateFindMissingNapi(const Napi::CallbackInfo& info); FIXME
 
 
@@ -454,3 +457,5 @@ public:
     SplayTree(const Napi::CallbackInfo& info);
 
 };
+
+#endif

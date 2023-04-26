@@ -5,12 +5,15 @@
 //              - sets export keys and values, and returns exports
 // Call Flow: first_js_module_use -> Init
 Napi::Object SplayTree::Init(Napi::Env env, Napi::Object exports) {
+
     // returns constructor
     Napi::Function func =
         DefineClass(env,
                   "SplayTree",
                   {InstanceMethod("searchnapi", &SplayTree::SearchNapi),
-                   InstanceMethod("searchpartialmatchesnapi", &SplayTree::SearchPartialMatchesNapi)});
+                   InstanceMethod("searchpartialmatchesnapi", &SplayTree::SearchPartialMatchesNapi),
+                    InstanceMethod("dummynapi", &SplayTree::DummyNapi)
+                    });
 
     Napi::FunctionReference* constructor = new Napi::FunctionReference();
     *constructor = Napi::Persistent(func);
@@ -42,39 +45,47 @@ SplayTree::SplayTree(const Napi::CallbackInfo& info)
     CreateUserDiet();
 }
 
-Napi::Value SearchNapi(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
+Napi::Value SplayTree::DummyNapi(const Napi::CallbackInfo& info) {
+    int num = this->dummy;
+    return Napi::Number::New(info.Env(), num);
+}
+
+Napi::Value SplayTree::SearchNapi(const Napi::CallbackInfo& info) {
     std::string food = (std::string) info[0].ToString();
 
-    this->dummy = 1;
     // Search for food's data
     // struct -> vector<pair<string, double>> -> napi array of FoodData's values (aka nutritional info)
-    FoodData* result = Search(food);
-    std::vector<pair<std::string,double>> resultVec = (*result).GetNutrientValues();
-    Napi::Array resultNapi = Napi::Array::New(env, resultVec.size());
+    std::cout << "searchfunc" <<std::endl;
+    FoodData* resultVecPair = Search(food);
+    std::cout << "vecconversion" <<std::endl;
+    std::vector<std::pair<std::string, double>> resultVec = resultVecPair->GetNutrientValues();
+    std::cout << "napiarraydecl" <<std::endl;
+    Napi::Array resultNapi = Napi::Array::New(info.Env(), resultVec.size());
 
+    std::cout << "populateNapi" <<std::endl;
     // populate napi array
     for (int i=0; i < resultVec.size(); i++)
-        resultNapi[i] = Napi::Number::New(env, resultVec[i].second);
+        resultNapi[i] = Napi::Number::New(info.Env(), resultVec[i].second);
 
+    std::cout << "returnNapi" <<std::endl;
     return resultNapi;
 }
 
-Napi::Value SearchPartialMatchesNapi(const Napi::CallbackInfo& info) {
-    Napi::Env env = info.Env();
+Napi::Value SplayTree::SearchPartialMatchesNapi(const Napi::CallbackInfo& info) {
     std::string typed = (std::string) info[0].ToString();
 
     // search for typed letter's partial matches
     // ex: burg is a partial match for burger
     // vector<FoodData *> -> napi array of FoodData's description (aka food name)
     // FIXME: currently passing in empty vector, ideally pass in vector of current results
-    std::vector<FoodData *> result = SearchPartialMatches(typed, result);
-    Napi::Array resultNapi = Napi::Array::New(env, result.size());
+    std::vector<FoodData*> current_results = {};
+    std::vector<FoodData*> resultVecFood = SearchPartialMatches(typed, current_results);
+    Napi::Array resultNapi = Napi::Array::New(info.Env(), resultVecFood.size());
 
     // populate napi array
-    for (int i=0; i < result.size(); i++) {
-        std::string foodDescription = result[i].Shrt_Desc;
-        resultNapi[i] = Napi::String::New(env, foodDescription);
+    for (int i=0; i < resultVecFood.size(); i++) {
+        std::string foodDescription = resultVecFood[i]->Shrt_Desc;
+        resultNapi[i] = Napi::String::New(info.Env(), foodDescription);
     }
 
     return resultNapi;
@@ -682,23 +693,23 @@ void SplayTree::PrintInOrderHelper(const Node *node) const {
         return;
     }
     PrintInOrderHelper(node->left);
-    std::cout << node->data.Shrt_Desc << endl;
+    std::cout << node->data.Shrt_Desc << std::endl;
     PrintInOrderHelper(node->right);
 }
 
 void SplayTree::Print(const FoodData &food) {
     int sum_fats = food.FA_Sat_g + food.FA_Mono_g + food.FA_Poly_g;
-    cout << "Ingredient: " << food.Shrt_Desc << " Calories: " << food.Energ_Kcal <<
-         " Protein: " << food.Protein_g << " Carbs: " << food.Carbohydrt_g << " Fats: " << sum_fats << endl;
+    std::cout << "Ingredient: " << food.Shrt_Desc << " Calories: " << food.Energ_Kcal <<
+         " Protein: " << food.Protein_g << " Carbs: " << food.Carbohydrt_g << " Fats: " << sum_fats << std::endl;
 }
 
 void SplayTree::PrintUserDiet(const FoodData &food) {
     int sum_fats = food.FA_Sat_g + food.FA_Mono_g + food.FA_Poly_g;
-    cout << "Your daily intake: " << food.Shrt_Desc << " Calories: " << food.Energ_Kcal <<
-         " Protein: " << food.Protein_g << " Carbs: " << food.Carbohydrt_g << " Fats: " << sum_fats << endl;
+    std::cout << "Your daily intake: " << food.Shrt_Desc << " Calories: " << food.Energ_Kcal <<
+         " Protein: " << food.Protein_g << " Carbs: " << food.Carbohydrt_g << " Fats: " << sum_fats << std::endl;
 }
 
-void SplayTree::PrintSearchResults(vector<FoodData *> &results) {
+void SplayTree::PrintSearchResults(std::vector<FoodData *> &results) {
     std::cout << "Search results:\n";
     for (const auto &result: results) {
         std::cout << result->Shrt_Desc << std::endl;
@@ -706,11 +717,12 @@ void SplayTree::PrintSearchResults(vector<FoodData *> &results) {
 }
 
 // Calculate and print the missing nutrients from diet
-void SplayTree::CalculateFindMissing(vector<std::string> &keys) {
+/*
+void SplayTree::CalculateFindMissing(std::vector<std::string> &keys) {
     for (const std::string &key: keys) {
         FoodData *temp = NarrowDownSearch(key);
         if (temp == nullptr) {
-            cout << "Ingredient not found" << endl;
+            std::cout << "Ingredient not found" << std::endl;
             continue;
         }
         user_diet = user_diet + *temp;
@@ -722,7 +734,7 @@ void SplayTree::CalculateFindMissing(vector<std::string> &keys) {
     FoodData percent_missing = user_diet / balanced_diet;
     percent_missing = percent_missing * 100;
 
-    vector<pair<std::string, double>> percents = percent_missing.GetNutrientValues();
+    vector<std::pair<std::string, double>> percents = percent_missing.GetNutrientValues();
     // Sort the percents vector by lowest value first
     std::sort(percents.begin(), percents.end(), [](const auto &a, const auto &b) {
         return a.second < b.second;
@@ -730,7 +742,7 @@ void SplayTree::CalculateFindMissing(vector<std::string> &keys) {
 
     // Put the 3 lowest values in a vector of strings
     std::vector<std::string> lowest_three_nutrients;
-    cout << "Most missing nutrients: ";
+    std::cout << "Most missing nutrients: ";
     for (auto & percent : percents) {
         if (percent.first != "Refuse_Pct" && percent.first != "GmWt_2" && percent.first != "GmWt_1") {
             lowest_three_nutrients.push_back(percent.first);
@@ -741,9 +753,9 @@ void SplayTree::CalculateFindMissing(vector<std::string> &keys) {
     }
     for (const auto & lowest_three_nutrient : lowest_three_nutrients)
     {
-        cout << lowest_three_nutrient << " ";
+        std::cout << lowest_three_nutrient << " ";
     }
-    cout << endl;
+    std::cout << std::endl;
     // now find the 3 highest ingredients with these nutrients
     // now find the 3 highest ingredients with these nutrients
     vector<FoodData*> missing_from_diet;
@@ -763,4 +775,4 @@ void SplayTree::CalculateFindMissing(vector<std::string> &keys) {
         Print(*f);
     }
 }
-
+*/

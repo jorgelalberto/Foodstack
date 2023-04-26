@@ -1,11 +1,22 @@
-const greetModule = require('./build/Release/greet.node');
+const { prototype } = require('events');
+const greetModule = require('./build/Debug/greet.node');
+console.log()
 console.log('exports : ', greetModule);
-console.log();
 console.log('greetModule.greetHello() : ', greetModule.greetHello(""));
 console.log()
 
-// var addon = require('bindings')('addon')
-// var splayTree = addon.SplayTree(filename)
+var splayTreeAddon = require('./build/Debug/SPLAYTREE.node');
+var splayTree = new splayTreeAddon.SplayTree();
+//var tester1 = splayTree.[[Prototype]];
+
+console.log('Object : ', splayTreeAddon);
+console.log('Object : ', splayTree);
+//console.log('Func : ', splayTree.searchnapi('BUTTER,WITH SALT'));
+console.log('Func : ', splayTree.searchpartialmatchesnapi('BUTTER,WITH SALT'));
+console.log('Func : ', splayTree.dummynapi());
+
+//console.log('Object : ', splayTree.searchnapi("BUTTER,WITH SALT"));
+console.log()
 
 
 
@@ -40,8 +51,8 @@ app.get('/aboutUs', function (req, res) {
 
 app.post('/homePage/search', function (req, res) {
     let payload = req.body.payload.trim();
-    //let search = await splayTree.NarrowDownSearch(payload)
-    console.log(payload);
+    let search = splayTree.searchpartialmatchesnapi(payload)
+    console.log(search);
     //res.send({payload: search});
 });
 

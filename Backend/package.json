@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js",
-    "build": "browserify index.js -o bundle.js"
+    "rebuild:dev": "node-gyp -j 16 rebuild --debug",
+    "rebuild": "node-gyp -j 16 rebuild"
   },
   "gypfile": true,
   "author": "Jorge L. Alberto",
