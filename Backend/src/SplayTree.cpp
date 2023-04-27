@@ -244,7 +244,7 @@ if (!getline(ss, line, ',')) { \
         READ_OR_DEFAULT(Cholestrl_mg)
         READ_OR_DEFAULT(GmWt_1)
         ReadQuotedField(ss, food_data.GmWt_Desc1);
-        READ_OR_DEFAULT(GmWt_2);
+        READ_OR_DEFAULT(GmWt_2)
         ReadQuotedField(ss, food_data.GmWt_Desc2);
 
         if (!getline(ss, line, ',')) {
@@ -320,15 +320,32 @@ SplayTree::Node *SplayTree::NewNode(const FoodData &food_data) {
 }
 
 FoodData *SplayTree::Search(const string &key) {
+
+    // MEASUREMENTS
+    clock_t start, end;
+    double cpu_time_used;
+    start = clock(); // Get the starting time
+
     // Search for a FoodData object based on a given key (Shrt_Desc)
     root = SearchHelper(root, key);
     if (root && root->data.Shrt_Desc == key) {
         return &(root->data);
     }
+
+    // END MEASUREMENTS
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    std::cout << "Time taken: " << cpu_time_used << " seconds" << std::endl;
     return nullptr;
 }
 
 FoodData *SplayTree::NarrowDownSearch(const std::string &key) {
+
+    // MEASUREMENTS
+    clock_t start, end;
+    double cpu_time_used;
+    start = clock(); // Get the starting time
+
     std::vector<FoodData *> results = SearchPartialMatches(key, {});
     std::vector<FoodData *> prev_results;
     std::string input_key = key;
@@ -354,10 +371,20 @@ FoodData *SplayTree::NarrowDownSearch(const std::string &key) {
     }
 
     if (results.size() == 1) {
+
+        // END MEASUREMENTS
+        end = clock();
+        cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+        std::cout << "Time taken: " << cpu_time_used << " seconds" << std::endl;
+
         root = SearchHelper(root, results[0]->Shrt_Desc); // Reorganize the splay tree
         return results[0];
     }
 
+    // END MEASUREMENTS
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    std::cout << "Time taken: " << cpu_time_used << " seconds" << std::endl;
     return nullptr;
 }
 
@@ -444,24 +471,23 @@ FoodData *SplayTree::FindMaxNutrient(const std::string &nutrient) {
 
     FoodData *max_food_data = nullptr;
     double max_value = -1;
-
-    std::function<void(Node *)> traverse = [&](Node *node) {
-        if (!node) {
-            return;
-        }
-
-        double current_value = node->data.GetValue(nutrient);
-        if (current_value > max_value) {
-            max_value = current_value;
-            max_food_data = &(node->data);
-        }
-
-        traverse(node->left);
-        traverse(node->right);
-    };
-
-    traverse(root);
+    Traverse(root, nutrient, max_food_data, max_value);
     return max_food_data;
+}
+
+void SplayTree::Traverse(Node *node, const std::string &nutrient, FoodData *&max_food_data, double &max_value) {
+    if (!node) {
+        return;
+    }
+
+    double current_value = node->data.GetValue(nutrient);
+    if (current_value > max_value) {
+        max_value = current_value;
+        max_food_data = &(node->data);
+    }
+
+    Traverse(node->left, nutrient, max_food_data, max_value);
+    Traverse(node->right, nutrient, max_food_data, max_value);
 }
 
 bool SplayTree::Delete(const std::string &key) {
@@ -511,7 +537,7 @@ SplayTree::Node *SplayTree::Join(Node *left, Node *right) {
     }
 
     // Splay the largest element to the root of the left tree
-    left = SearchHelper(left, temp->data.NDB_No);
+    left = SearchHelper(left, temp->data.Shrt_Desc);
 
     // Set the right tree as the right child of the left tree
     left->right = right;
@@ -523,21 +549,21 @@ SplayTree::Node *SplayTree::Splay(Node *root, const std::string &key) {
         return nullptr;
     }
 
-    if (root->data.NDB_No == key) {
+    if (root->data.Shrt_Desc == key) {
         return root;
     }
 
-    if (root->data.NDB_No < key) {
+    if (root->data.Shrt_Desc < key) {
         // Key is in the right subtree
         if (!root->right) {
             return root;
         }
 
-        if (root->right->data.NDB_No < key) {
+        if (root->right->data.Shrt_Desc < key) {
             // Right-right case: rotate left
             root->right->right = Splay(root->right->right, key);
             root = LeftRotate(root);
-        } else if (root->right->data.NDB_No > key) {
+        } else if (root->right->data.Shrt_Desc > key) {
             // Right-left case: rotate right and then left
             root->right->left = Splay(root->right->left, key);
             if (root->right->left) {
@@ -552,13 +578,13 @@ SplayTree::Node *SplayTree::Splay(Node *root, const std::string &key) {
             return root;
         }
 
-        if (root->left->data.NDB_No < key) {
+        if (root->left->data.Shrt_Desc < key) {
             // Left-right case: rotate left and then right
             root->left->right = Splay(root->left->right, key);
             if (root->left->right) {
                 root->left = LeftRotate(root->left);
             }
-        } else if (root->left->data.NDB_No > key) {
+        } else if (root->left->data.Shrt_Desc > key) {
             // Left-left case: rotate right
             root->left->left = Splay(root->left->left, key);
             root = RightRotate(root);
@@ -603,7 +629,7 @@ void SplayTree::PrintSearchResults(vector<FoodData *> &results) {
 
 void SplayTree::CalculateFindMissing(vector<string> &keys) {
     for (const string &key: keys) {
-        FoodData *temp = NarrowDownSearch(key);
+        FoodData *temp = Search(key);
         if (temp == nullptr) {
             cout << "Ingredient not found" << endl;
             continue;
@@ -624,7 +650,7 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
 
     // Put the 3 lowest values in a vector of strings
     std::vector<std::string> lowest_three_nutrients;
-    cout << "Your suggestions: ";
+    cout << "Most missing nutrients: ";
     for (auto &percent: percents) {
         if (percent.first != "Refuse_Pct" && percent.first != "GmWt_2" && percent.first != "GmWt_1") {
             lowest_three_nutrients.push_back(percent.first);
@@ -660,9 +686,9 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
 void SplayTree::CalculateUserBMR(const string &gender, int weight, int height, int age, const string &activity_level) {
     double bmr;
     if (gender == "m") {
-        bmr = 66.47 + ((13.75*0.454) * weight) + ((5.003*2.54) * height) - (6.755 * age);
+        bmr = 66.47 + ((13.75 * 0.454) * weight) + ((5.003 * 2.54) * height) - (6.755 * age);
     } else {
-        bmr = 655.1 + ((9.563*0.454) * weight) + ((1.85*2.54) * height) - (4.676 * age);
+        bmr = 655.1 + ((9.563 * 0.454) * weight) + ((1.85 * 2.54) * height) - (4.676 * age);
     }
     if (activity_level == "sedentary") {
         bmr *= 1.2;
@@ -680,7 +706,7 @@ void SplayTree::CalculateUserBMR(const string &gender, int weight, int height, i
     double carbs = bmr * 0.44;
     double fats = bmr * 0.3;
 
-    // TODO: - maybe imnplement this - for saving the balanced diet and calculating the missing nutrients.
+    // TODO: - maybe implement this - for saving the balanced diet and calculating the missing nutrients.
     /*
     balanced_diet.Energ_Kcal = bmr;
     balanced_diet.Protein_g = protein/4;
