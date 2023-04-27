@@ -12,6 +12,7 @@ int main() {
                 "3. Search meal totals\n"
                 "4. Your BMR\n"
                 "5. Print the list\n"
+                "6. Print the root\n"
                 "Exit: any other key\n";
 
         int option;
@@ -83,7 +84,11 @@ int main() {
             SplayTree::CalculateUserBMR(gender, weight, height, age, activity);
             select = false;
         } else if (option == 5 && select) {
-            splayTree.PrintInOrder();
+            splayTree.PrintPreOrder();
+            select = false;
+
+        } else if (option == 6 && select) {
+            splayTree.PrintRoot();
             select = false;
         } else {
             running = false;

@@ -7,18 +7,19 @@
 #include <string>
 #include <map>
 #include <set>
-
+#include <ctime>
+#include <algorithm>
 using namespace std;
 
 struct FoodData {
-    string NDB_No = "";
-    string Shrt_Desc = "";
+    string NDB_No="";
+    string Shrt_Desc="";
     double Water_g = 0, Energ_Kcal = 0, Protein_g = 0, Lipid_Tot_g = 0, Ash_g = 0, Carbohydrt_g = 0, Fiber_TD_g = 0, Sugar_Tot_g = 0;
     double Calcium_mg = 0, Iron_mg = 0, Magnesium_mg = 0, Phosphorus_mg = 0, Potassium_mg = 0, Sodium_mg = 0, Zinc_mg = 0, Copper_mg = 0, Manganese_mg = 0, Selenium_ug = 0;
     double Vit_C_mg = 0, Thiamin_mg = 0, Riboflavin_mg = 0, Niacin_mg = 0, Panto_Acid_mg = 0, Vit_B6_mg = 0, Folate_Tot_ug = 0, Folic_Acid_ug = 0, Food_Folate_ug = 0, Folate_DFE_ug = 0;
     double Choline_Tot_mg = 0, Vit_B12_ug = 0, Vit_A_IU = 0, Vit_A_RAE = 0, Retinol_ug = 0, Alpha_Carot_ug = 0, Beta_Carot_ug = 0, Beta_Crypt_ug = 0, Lycopene_ug = 0, Lut_Zea_ug = 0;
     double Vit_E_mg = 0, Vit_D_ug = 0, Vit_D_IU = 0, Vit_K_ug = 0, FA_Sat_g = 0, FA_Mono_g = 0, FA_Poly_g = 0, Cholestrl_mg = 0, GmWt_1 = 0, GmWt_2 = 0, Refuse_Pct = 0;
-    string GmWt_Desc1 = "", GmWt_Desc2 = "";
+    string GmWt_Desc1="", GmWt_Desc2="";
     double FA_Tot = 0;
 
     // Overloaded + operator
@@ -408,7 +409,7 @@ public:
 
     // CREATE USER DIET AND BALANCED DIET, READ FILE
     void ReadFile(const std::string &filename); // reads in the file
-    static bool ReadQuotedField(std::stringstream &ss, std::string &field); // helper function for ReadFile
+    bool ReadQuotedField(std::stringstream &ss, std::string &field); // helper function for ReadFile
     void CreateBalanced(); // create default balanced diet
     void CreateUserDiet(); // create default user diet
 
@@ -420,25 +421,30 @@ public:
     // SEARCHES
     FoodData *Search(const std::string &key); // Search for a FoodData object based on name
     Node *SearchHelper(Node *root, const std::string &key); // helper for Search
-    void SearchPartialMatchesHelper(Node *node, const std::string &key, std::vector<FoodData *> &results); // helper for SearchPartialMatches
+    void SearchPartialMatchesHelper(Node *node, const std::string &key,
+                                    std::vector<FoodData *> &results); // helper for SearchPartialMatches
     vector<FoodData *> SearchPartialMatches
-    (const std::string &key,const std::vector<FoodData *> &current_results); // helper to return a vector of narrowed matches
+            (const std::string &key,
+             const std::vector<FoodData *> &current_results); // helper to return a vector of narrowed matches
     FoodData *NarrowDownSearch(const std::string &key); // narrows down the search results
 
     // Additional helper functions for splay tree operations
-    static Node *NewNode(const FoodData &food_data); // Creates a new Node
-    static Node *RightRotate(Node *x); // Perform a right rotation on the given node x
-    static Node *LeftRotate(Node *x); // Perform a left rotation on the given node x
-    Node *Splay(Node *root, const std::string &key); // Splay the node with the given key to the root of the splay tree rooted at the given root
-    Node *Join(Node *left, Node *right); // Join two splay trees with all elements in the left tree having smaller keys than elements in the right tree
+    Node *NewNode(const FoodData &food_data); // Creates a new Node
+    Node *RightRotate(Node *x); // Perform a right rotation on the given node x
+    Node *LeftRotate(Node *x); // Perform a left rotation on the given node x
+    Node *Splay(Node *root,
+                const std::string &key); // Splay the node with the given key to the root of the splay tree rooted at the given root
+    Node *Join(Node *left,
+               Node *right); // Join two splay trees with all elements in the left tree having smaller keys than elements in the right tree
+    void Traverse(Node *node, const std::string &nutrient, FoodData *&max_food_data, double &max_value);
 
     // PRINTING
     void PrintInOrder() const; // Print the splay tree inorder traversal(entire list)
-    static void Print(const FoodData &food); // Print a single FoodData item
+    void Print(const FoodData &food); // Print a single FoodData item
     static void PrintUserDiet(const FoodData &food); // Print the user's diet
-    static void PrintSearchResults(vector<FoodData *> &results); // Print the search results
+    void PrintSearchResults(vector<FoodData *> &results); // Print the search results
 
-    // Calculations (top 3 missing (%)
+    // Calculations (top 3 missing (%))
     void CalculateFindMissing(vector<string> &keys); // Calculate and print the missing nutrients from diet
     FoodData *FindMaxNutrient(const std::string &nutrient); // finds the food with the highest nutrient value
 
@@ -447,7 +453,11 @@ public:
     FoodData GetUserDiet() { return user_diet; } // Gets User Diet
 
     // BMR Calculations
-    static void CalculateUserBMR(const string &gender, int weight, int height, int age, const string &activity_level); // Calculate User BMR
+    static void CalculateUserBMR(const string &gender, int weight, int height, int age,
+                                 const string &activity_level); // Calculate User BMR
 
+    void PrintPreOrder();
+    void PrintPreOrderHelper(const Node *node) const;
+    void PrintRoot();
 };
 

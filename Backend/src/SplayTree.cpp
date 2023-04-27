@@ -22,7 +22,6 @@ SplayTree::~SplayTree() {
         deleteNodes(node->right);
         delete node;
     };
-
     deleteNodes(root);
 }
 
@@ -287,12 +286,12 @@ SplayTree::Node *SplayTree::InsertHelper(Node *root, const FoodData &food_data) 
     }
 
     // Splay the node with the closest key to the target key
-    root = Splay(root, food_data.NDB_No);
+    root = Splay(root, food_data.Shrt_Desc);
 
-    if (root->data.NDB_No == food_data.NDB_No) {
+    if (root->data.Shrt_Desc == food_data.Shrt_Desc) {
         // If the key already exists, replace the data
         root->data = food_data;
-    } else if (root->data.NDB_No < food_data.NDB_No) {
+    } else if (root->data.Shrt_Desc < food_data.Shrt_Desc) {
         // Insert the new node to the right of the splayed node
         Node *new_node = NewNode(food_data);
         new_node->right = root->right;
@@ -319,8 +318,46 @@ SplayTree::Node *SplayTree::NewNode(const FoodData &food_data) {
     return node;
 }
 
-FoodData *SplayTree::Search(const string &key) {
+SplayTree::Node *SplayTree::SearchHelper(Node *root, const std::string &key) {
+    if (!root || root->data.Shrt_Desc == key) {
+        return root;
+    }
 
+    if (root->data.Shrt_Desc < key) {
+        if (!root->right) {
+            return root;
+        }
+        if (root->right->data.Shrt_Desc < key) {
+            root->right->right = SearchHelper(root->right->right, key);
+            root = LeftRotate(root);
+        } else if (root->right->data.Shrt_Desc > key) {
+            root->right->left = SearchHelper(root->right->left, key);
+            if (root->right->left) {
+                root->right = RightRotate(root->right);
+            }
+        }
+        // Update the root of the subtree after rotations
+        root = !root->right ? root : LeftRotate(root);
+    } else {
+        if (!root->left) {
+            return root;
+        }
+        if (root->left->data.Shrt_Desc > key) {
+            root->left->left = SearchHelper(root->left->left, key);
+            root = RightRotate(root);
+        } else if (root->left->data.Shrt_Desc < key) {
+            root->left->right = SearchHelper(root->left->right, key);
+            if (root->left->right) {
+                root->left = LeftRotate(root->left);
+            }
+        }
+        // Update the root of the subtree after rotations
+        root = !root->left ? root : RightRotate(root);
+    }
+    return root;
+}
+
+FoodData *SplayTree::Search(const string &key) {
     // MEASUREMENTS
     clock_t start, end;
     double cpu_time_used;
@@ -329,13 +366,14 @@ FoodData *SplayTree::Search(const string &key) {
     // Search for a FoodData object based on a given key (Shrt_Desc)
     root = SearchHelper(root, key);
     if (root && root->data.Shrt_Desc == key) {
+
+        // END MEASUREMENTS
+        end = clock();
+        cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+        std::cout << "Time taken: " << cpu_time_used << " seconds" << std::endl;
+
         return &(root->data);
     }
-
-    // END MEASUREMENTS
-    end = clock();
-    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    std::cout << "Time taken: " << cpu_time_used << " seconds" << std::endl;
     return nullptr;
 }
 
@@ -381,10 +419,6 @@ FoodData *SplayTree::NarrowDownSearch(const std::string &key) {
         return results[0];
     }
 
-    // END MEASUREMENTS
-    end = clock();
-    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    std::cout << "Time taken: " << cpu_time_used << " seconds" << std::endl;
     return nullptr;
 }
 
@@ -426,42 +460,6 @@ void SplayTree::SearchPartialMatchesHelper(Node *node, const std::string &key, s
 
     SearchPartialMatchesHelper(node->left, key, results);
     SearchPartialMatchesHelper(node->right, key, results);
-}
-
-SplayTree::Node *SplayTree::SearchHelper(Node *root, const std::string &key) {
-    if (!root || root->data.Shrt_Desc == key) {
-        return root;
-    }
-
-    if (root->data.Shrt_Desc < key) {
-        if (!root->right) {
-            return root;
-        }
-        if (root->right->data.Shrt_Desc < key) {
-            root->right->right = SearchHelper(root->right->right, key);
-            root = LeftRotate(root);
-        } else if (root->right->data.Shrt_Desc > key) {
-            root->right->left = SearchHelper(root->right->left, key);
-            if (root->right->left) {
-                root->right = RightRotate(root->right);
-            }
-        }
-        return !root->right ? root : LeftRotate(root);
-    } else {
-        if (!root->left) {
-            return root;
-        }
-        if (root->left->data.Shrt_Desc > key) {
-            root->left->left = SearchHelper(root->left->left, key);
-            root = RightRotate(root);
-        } else if (root->left->data.Shrt_Desc < key) {
-            root->left->right = SearchHelper(root->left->right, key);
-            if (root->left->right) {
-                root->left = LeftRotate(root->left);
-            }
-        }
-        return !root->left ? root : RightRotate(root);
-    }
 }
 
 FoodData *SplayTree::FindMaxNutrient(const std::string &nutrient) {
@@ -607,6 +605,26 @@ void SplayTree::PrintInOrderHelper(const Node *node) const {
     std::cout << node->data.Shrt_Desc << endl;
     PrintInOrderHelper(node->right);
 }
+void SplayTree::PrintPreOrder() {
+    PrintPreOrderHelper(root);
+    std::cout << std::endl;
+}
+
+void SplayTree::PrintPreOrderHelper(const Node *node) const {
+    if (!node) {
+        return;
+    }
+
+    // Print the current node's data
+    std::cout << node->data.Shrt_Desc << endl;
+
+    // Recursively print the left and right subtrees
+    PrintPreOrderHelper(node->left);
+    PrintPreOrderHelper(node->right);
+}
+void SplayTree::PrintRoot(){
+    cout << root->data.Shrt_Desc << endl;
+}
 
 void SplayTree::Print(const FoodData &food) {
     double sum_fats = food.FA_Sat_g + food.FA_Mono_g + food.FA_Poly_g;
@@ -638,7 +656,6 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
     }
 
     PrintUserDiet(user_diet);
-
     FoodData percent_missing = user_diet / balanced_diet;
     percent_missing = percent_missing * 100;
 
