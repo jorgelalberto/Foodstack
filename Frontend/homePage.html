@@ -33,33 +33,92 @@
               </nav>
         </header>
         <section>
-            <div class="resourceTotal">
-            <h3 class="resourceGroupName">Welcome</h3>
-            <div class="dropdown">
-                <button onclick="myFunction()" class="dropbtn">Enter Ingredient</button>
+          <h3 class="resourceGroupName">Welcome</h3>
+            <div id="block">
+              <div class="dropdown">
+                <button onclick="dropdown('myDropdown')" class="dropbtn">Enter Ingredient</button>
                 <div id="myDropdown" class="dropdown-content">
                   <input type="text" placeholder="Search.." id="myInput" onkeyup="searchIngredients(this)">
-                  <!--<a onclick="searchEr(this)">About</a>
-                  <a onclick="addIngredient(this.id)">Base</a>
-                  <a onclick="addIngredient(this.id)">Blog</a>
-                  <a onclick="addIngredient(this.id)">Contact</a>
-                  <a onclick="addIngredient(this.id)">Custom</a>
-                  <a onclick="addIngredient(this.id)">Support</a>
-                  <a onclick="addIngredient()">Tools</a>-->
+                  <small>
+                  <section id="searchResults">
+                    
+                  </section>
+                  </small>
+                </div>
+              </div>
+              
+              <div class="Meal" class="Meal1">
+                <h2 class="Title">Meals</h2>
+                <a onclick="dropdown('ingredientList1Drop');showMealMacros(this)">Meal 1</a>
+                <div id="ingredientList1Drop" class="dropdown-content">
+                  <small>
+                    <section id="ingredientList1">
+                      
+                    </section>
+                  </small>
+                </div>
+                <a onclick="dropdown('ingredientList2Drop')">Meal 2</a>
+                <div id="ingredientList2Drop" class="dropdown-content">
+                  <small>
+                    <section id="ingredientList2">
+                      
+                    </section>
+                  </small>
+                </div>
+                <a onclick="dropdown('ingredientList3Drop')">Meal 3</a>
+                <div id="ingredientList3Drop" class="dropdown-content">
+                  <small>
+                    <section id="ingredientList3">
+                      
+                    </section>
+                  </small>
+                </div>
+                <a onclick="dropdown('ingredientList4Drop')">Meal 4</a>
+                <div id="ingredientList4Drop" class="dropdown-content">
+                  <small>
+                    <section id="ingredientList4">
+                      
+                    </section>
+                  </small>
+                </div>
+                <a onclick="dropdown('ingredientList5Drop')">Meal 5</a>
+                <div id="ingredientList5Drop" class="dropdown-content">
+                  <small>
+                    <section id="ingredientList5">
+                      
+                    </section>
+                  </small>
+                </div>
+                <a onclick="dropdown('ingredientList6Drop')">Meal 6</a>
+                <div id="ingredientList6Drop" class="dropdown-content">
+                  <small>
+                    <section id="ingredientList6">
+                      
+                    </section>
+                  </small>
                 </div>
               </div>
               <div class="Meal">
-                <h2 class="MealTitle">Meal</h2>
-                <div id="ingredientList" class="MealIngredients">
-                  <a href="#about">About</a>
-                  <a href="#base">Base</a>
-                  <a href="#blog">Blog</a>
-                  <a href="#contact">Contact</a>
-                  <a href="#custom">Custom</a>
-                  <a href="#support">Support</a>
-                  <a href="#tools">Tools</a>
+                <h2 class="Title">Macros</h2>
+                <div id="" class="MealIngredients">
+                  <small>
+                    <section id="ingredientInfo">
+
+                    </section>
+                  </small>
                 </div>
               </div>
+              <div class="Meal">
+                <h2 class="Title">Algorithms</h2>
+                <div id="" class="MealIngredients">
+                  <small>
+                    <section id="algoInfo">
+
+                    </section>
+                  </small>
+                </div>
+              </div>
+            </div>
         </section>
         <footer>
 

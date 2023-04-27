@@ -42,7 +42,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\SplayTree.cpp">
+    <ClCompile Include="..\src\newSplayTree.cpp">
       <Filter>..\src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\indexSplayTree.cpp">

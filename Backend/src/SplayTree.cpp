@@ -12,7 +12,7 @@ Napi::Object SplayTree::Init(Napi::Env env, Napi::Object exports) {
                   "SplayTree",
                   {InstanceMethod("searchnapi", &SplayTree::SearchNapi),
                    InstanceMethod("searchpartialmatchesnapi", &SplayTree::SearchPartialMatchesNapi),
-                    InstanceMethod("dummynapi", &SplayTree::DummyNapi)
+                    InstanceMethod("gettimenapi", &SplayTree::GetTimeNapi)
                     });
 
     Napi::FunctionReference* constructor = new Napi::FunctionReference();
@@ -45,29 +45,34 @@ SplayTree::SplayTree(const Napi::CallbackInfo& info)
     CreateUserDiet();
 }
 
-Napi::Value SplayTree::DummyNapi(const Napi::CallbackInfo& info) {
-    int num = this->dummy;
-    return Napi::Number::New(info.Env(), num);
-}
-
 Napi::Value SplayTree::SearchNapi(const Napi::CallbackInfo& info) {
-    std::string food = (std::string) info[0].ToString();
+    std::string ingredient = (std::string) info[0].ToString();
 
     // Search for food's data
     // struct -> vector<pair<string, double>> -> napi array of FoodData's values (aka nutritional info)
-    std::cout << "searchfunc" <<std::endl;
-    FoodData* resultVecPair = Search(food);
-    std::cout << "vecconversion" <<std::endl;
-    std::vector<std::pair<std::string, double>> resultVec = resultVecPair->GetNutrientValues();
-    std::cout << "napiarraydecl" <<std::endl;
-    Napi::Array resultNapi = Napi::Array::New(info.Env(), resultVec.size());
-
-    std::cout << "populateNapi" <<std::endl;
+    std::vector<FoodData*> current_results = {};
+    // note: resultVecFoodWillAlways be of size 1
+    FoodData* ingredientInfo = NarrowDownSearch(ingredient);
+    int napiArraySize = 5;
+    Napi::Array resultNapi = Napi::Array::New(info.Env(), napiArraySize);
+    
     // populate napi array
-    for (int i=0; i < resultVec.size(); i++)
-        resultNapi[i] = Napi::Number::New(info.Env(), resultVec[i].second);
+    int ind0 = 0;
+    int ind1 = 1;
+    int ind2 = 2;
+    int ind3 = 3;
+    int ind4 = 4;
+    double cals = ingredientInfo->Energ_Kcal;
+    double protein = ingredientInfo->Protein_g;
+    double carbs = ingredientInfo->Carbohydrt_g;
+    double fat = ingredientInfo->Lipid_Tot_g;
+    double sugar = ingredientInfo->Sugar_Tot_g;
+    resultNapi[ind0] = Napi::Number::New(info.Env(), cals);
+    resultNapi[ind1] = Napi::Number::New(info.Env(), protein);
+    resultNapi[ind2] = Napi::Number::New(info.Env(), carbs);
+    resultNapi[ind3] = Napi::Number::New(info.Env(), fat);
+    resultNapi[ind4] = Napi::Number::New(info.Env(), sugar);
 
-    std::cout << "returnNapi" <<std::endl;
     return resultNapi;
 }
 
@@ -79,7 +84,10 @@ Napi::Value SplayTree::SearchPartialMatchesNapi(const Napi::CallbackInfo& info) 
     // vector<FoodData *> -> napi array of FoodData's description (aka food name)
     // FIXME: currently passing in empty vector, ideally pass in vector of current results
     std::vector<FoodData*> current_results = {};
+    auto begin = std::chrono::high_resolution_clock::now();
     std::vector<FoodData*> resultVecFood = SearchPartialMatches(typed, current_results);
+    auto end = std::chrono::high_resolution_clock::now();
+    this->lastRunTime = std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count();
     Napi::Array resultNapi = Napi::Array::New(info.Env(), resultVecFood.size());
 
     // populate napi array
@@ -89,6 +97,17 @@ Napi::Value SplayTree::SearchPartialMatchesNapi(const Napi::CallbackInfo& info) 
     }
 
     return resultNapi;
+}
+
+// get stored lastRunTime var, which stores in obj the time the last search opeartion took to run
+Napi::Value SplayTree::GetTimeNapi(const Napi::CallbackInfo& info) {
+    // Error Handling
+    if (info.Length() > 0) {
+        Napi::TypeError::New(info.Env(), "GetTime does not take in value(s)").ThrowAsJavaScriptException();
+        return Napi::Number::New(info.Env(), -1);
+    }
+    
+    return Napi::Number::New(info.Env(), this->lastRunTime);
 }
 
 /*
@@ -403,15 +422,26 @@ SplayTree::Node *SplayTree::NewNode(const FoodData &food_data) {
 /*Returns food data*/
 FoodData *SplayTree::Search(const std::string &key) {
     // Search for a FoodData object based on a given key (Shrt_Desc)
+    auto begin = std::chrono::high_resolution_clock::now();
     root = SearchHelper(root, key);
+
     if (root && root->data.Shrt_Desc == key) {
+        auto end = std::chrono::high_resolution_clock::now();
+        this->lastRunTime = std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count();
+
         return &(root->data);
     }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    this->lastRunTime = std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count();
+
     return nullptr;
 }
 
 // Call Flow: CalculateFindMissing -> NarrowDownSearch
 FoodData *SplayTree::NarrowDownSearch(const std::string &key) {
+    auto begin = std::chrono::high_resolution_clock::now();
+
     std::vector<FoodData *> results = SearchPartialMatches(key, {});
     std::vector<FoodData *> prev_results;
     std::string input_key = key;
@@ -438,8 +468,15 @@ FoodData *SplayTree::NarrowDownSearch(const std::string &key) {
 
     if (results.size() == 1) {
         root = SearchHelper(root, results[0]->Shrt_Desc); // Reorganize the splay tree
+        
+        auto end = std::chrono::high_resolution_clock::now();
+        this->lastRunTime = std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count();
+
         return results[0];
     }
+
+
+    auto end = std::chrono::high_resolution_clock::now();
 
     return nullptr;
 }

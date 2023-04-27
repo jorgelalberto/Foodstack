@@ -399,7 +399,7 @@ private:
         Node *left;
         Node *right;
     };
-    int dummy = 1;
+    double lastRunTime = 0;
     Node *root;
     // an average balanced diet
     FoodData balanced_diet;
@@ -445,9 +445,11 @@ private:
 
 
     /*Server Public*/
+    // Returns Ingredient Info
     Napi::Value SearchNapi(const Napi::CallbackInfo& info);
+    // Returns Ingredient(s)
     Napi::Value SearchPartialMatchesNapi(const Napi::CallbackInfo& info);
-    Napi::Value DummyNapi(const Napi::CallbackInfo& info);
+    Napi::Value GetTimeNapi(const Napi::CallbackInfo& info);
     //Napi::Value CalculateFindMissingNapi(const Napi::CallbackInfo& info); FIXME
 
 

@@ -137,8 +137,8 @@
     <None Include="..\binding.gyp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\SplayTree.cpp">
-      <ObjectFileName>$(IntDir)\src\SplayTree.obj</ObjectFileName>
+    <ClCompile Include="..\src\newSplayTree.cpp">
+      <ObjectFileName>$(IntDir)\src\newSplayTree.obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="..\src\indexSplayTree.cpp">
       <ObjectFileName>$(IntDir)\src\indexSplayTree.obj</ObjectFileName>
