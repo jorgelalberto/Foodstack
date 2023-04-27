@@ -289,8 +289,8 @@ SplayTree::Node *SplayTree::InsertHelper(Node *root, const FoodData &food_data) 
     root = Splay(root, food_data.Shrt_Desc);
 
     if (root->data.Shrt_Desc == food_data.Shrt_Desc) {
-        // If the key already exists, replace the data
-        root->data = food_data;
+        // If the key already exists, do not insert the duplicate and return the root
+        return root;
     } else if (root->data.Shrt_Desc < food_data.Shrt_Desc) {
         // Insert the new node to the right of the splayed node
         Node *new_node = NewNode(food_data);
@@ -622,6 +622,7 @@ void SplayTree::PrintPreOrderHelper(const Node *node) const {
     PrintPreOrderHelper(node->left);
     PrintPreOrderHelper(node->right);
 }
+
 void SplayTree::PrintRoot(){
     cout << root->data.Shrt_Desc << endl;
 }
@@ -669,7 +670,7 @@ void SplayTree::CalculateFindMissing(vector<string> &keys) {
     std::vector<std::string> lowest_three_nutrients;
     cout << "Most missing nutrients: ";
     for (auto &percent: percents) {
-        if (percent.first != "Refuse_Pct" && percent.first != "GmWt_2" && percent.first != "GmWt_1") {
+        if (percent.first != "Refuse_Pct" && percent.first != "GmWt_2" && percent.first != "GmWt_1" && user_diet.GetValue(percent.first) != 0) {
             lowest_three_nutrients.push_back(percent.first);
         }
         if (lowest_three_nutrients.size() >= 3) {
