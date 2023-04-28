@@ -401,7 +401,11 @@ private:
     double lastRunTime = 0;
     Node *root;
     FoodData balanced_diet; // an average balanced diet
-    FoodData user_diet; // total sum of user's food intake
+    FoodData user_diet;
+    int numIngr = 0;
+    int mealNum = 0;
+    vector<FoodData> meals;
+
     void PrintInOrderHelper(const Node *node) const;
 
     // CONSTRUCTORS AND DESTRUCTOR
@@ -453,8 +457,19 @@ private:
     FoodData *FindMaxNutrient(const std::string &nutrient); // finds the food with the highest nutrient value
 
     // User Diet Calculations
-    void UpdateUserDiet(const FoodData &food) { user_diet = user_diet + food; } // Sets User Diet
+    void UpdateMeal(int &mealnum, const FoodData &food) {
+        if (meals.size() <= mealnum )
+            meals.push_back(food);
+        else
+            meals[mealnum] = meals[mealnum] + food; 
+    }
+    void SetUserDiet() {
+        for (int i=0; i<meals.size(); i++)
+            user_diet = meals[i] + user_diet; 
+    }
     FoodData GetUserDiet() { return user_diet; } // Gets User Diet
+    FoodData GetMeal(int mealnum) {return meals[mealnum];}
+
 
     // BMR Calculations
     static void CalculateUserBMR(const string &gender, int weight, int height, int age,
@@ -465,12 +480,15 @@ private:
     void PrintRoot();
 
     /*Server Public*/
-    // Returns Ingredient Info
+    // Returns Ingredient Info & Adds ingredient to userdiet
     Napi::Value SearchNapi(const Napi::CallbackInfo& info);
     // Returns Ingredient(s)
     Napi::Value SearchPartialMatchesNapi(const Napi::CallbackInfo& info);
     Napi::Value GetTimeNapi(const Napi::CallbackInfo& info);
-    Napi::Value PrintpreorderReturntopnodeNapi(const Napi::CallbackInfo& info);
+    Napi::Value GetTopNodeNapi(const Napi::CallbackInfo& info);
+    Napi::Value GetMealNapi(const Napi::CallbackInfo& info);
+    Napi::Value GetUserDietNapi(const Napi::CallbackInfo& info);
+    void UpdateMealNapi(const Napi::CallbackInfo& info);
     //Napi::Value CalculateFindMissingNapi(const Napi::CallbackInfo& info); FIXME
 
 

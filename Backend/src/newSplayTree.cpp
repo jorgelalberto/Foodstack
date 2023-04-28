@@ -9,7 +9,10 @@ Napi::Object SplayTree::Init(Napi::Env env, Napi::Object exports) {
                   {InstanceMethod("searchnapi", &SplayTree::SearchNapi),
                    InstanceMethod("searchpartialmatchesnapi", &SplayTree::SearchPartialMatchesNapi),
                     InstanceMethod("gettimenapi", &SplayTree::GetTimeNapi),
-                    InstanceMethod("printpreorderNreturntopnodenapi", &SplayTree::PrintpreorderReturntopnodeNapi),
+                    InstanceMethod("gettopnodenapi", &SplayTree::GetTopNodeNapi),
+                    InstanceMethod("getmealnapi", &SplayTree::GetMealNapi),
+                    InstanceMethod("getuserdietnapi", &SplayTree::GetUserDietNapi),
+                    InstanceMethod("updatemealnapi", &SplayTree::UpdateMealNapi)
                     });
 
     Napi::FunctionReference* constructor = new Napi::FunctionReference();
@@ -44,11 +47,8 @@ SplayTree::SplayTree(const Napi::CallbackInfo& info)
 
 Napi::Value SplayTree::SearchNapi(const Napi::CallbackInfo& info) {
     std::string ingredient = (std::string) info[0].ToString();
-
     // Search for food's data
     // struct -> vector<pair<string, double>> -> napi array of FoodData's values (aka nutritional info)
-    std::vector<FoodData*> current_results = {};
-    // note: resultVecFoodWillAlways be of size 1
     FoodData* ingredientInfo = Search(ingredient);
     int napiArraySize = 5;
     Napi::Array resultNapi = Napi::Array::New(info.Env(), napiArraySize);
@@ -107,17 +107,97 @@ Napi::Value SplayTree::GetTimeNapi(const Napi::CallbackInfo& info) {
     return Napi::Number::New(info.Env(), this->lastRunTime);
 }
 
-Napi::Value SplayTree::PrintpreorderReturntopnodeNapi(const Napi::CallbackInfo& info) {
+Napi::Value SplayTree::GetTopNodeNapi(const Napi::CallbackInfo& info) {
     // Error Handling
     if (info.Length() > 0) {
         Napi::TypeError::New(info.Env(), "PritntPreorder does not take in value(s)").ThrowAsJavaScriptException();
         return Napi::Number::New(info.Env(), -1);
     }
 
-    PrintPreOrder();
-
     return Napi::String::New(info.Env(), this->root->data.Shrt_Desc);
 }
+
+Napi::Value SplayTree::GetMealNapi(const Napi::CallbackInfo& info) {
+    int index = (int) info[0].ToNumber();
+    int napiArraySize = 5;
+
+    // Error Handling
+    if (info.Length() != 1) {
+        Napi::TypeError::New(info.Env(), "PritntPreorder takes in 1 value").ThrowAsJavaScriptException();
+        return Napi::Number::New(info.Env(), -1);
+    }
+    if (index >= meals.size()) {
+        Napi::Array resultNapi = Napi::Array::New(info.Env(), napiArraySize);
+        for (int i=0; i<5; i++)
+            resultNapi[i] = 0;
+        return resultNapi;
+    }
+
+    FoodData meal = GetMeal(index);
+    Napi::Array resultNapi = Napi::Array::New(info.Env(), napiArraySize);
+    
+    // populate napi array
+    int ind0 = 0;
+    int ind1 = 1;
+    int ind2 = 2;
+    int ind3 = 3;
+    int ind4 = 4;
+    double cals = meal.Energ_Kcal;
+    double protein = meal.Protein_g;
+    double carbs = meal.Carbohydrt_g;
+    double fat = meal.Lipid_Tot_g;
+    double sugar = meal.Sugar_Tot_g;
+    resultNapi[ind0] = Napi::Number::New(info.Env(), cals);
+    resultNapi[ind1] = Napi::Number::New(info.Env(), protein);
+    resultNapi[ind2] = Napi::Number::New(info.Env(), carbs);
+    resultNapi[ind3] = Napi::Number::New(info.Env(), fat);
+    resultNapi[ind4] = Napi::Number::New(info.Env(), sugar);
+
+    return resultNapi;
+}
+
+
+void SplayTree::UpdateMealNapi(const Napi::CallbackInfo& info) {
+    std::string ingredient = (std::string) info[0].ToString();
+    
+    // Add ingredient to user's diet
+    UpdateMeal(this->mealNum, *Search(ingredient));
+
+    this->numIngr += 1;
+    if (this->numIngr % 5 == 0)
+        this->mealNum += 1;
+
+    return;
+}
+
+Napi::Value SplayTree::GetUserDietNapi(const Napi::CallbackInfo& info) {
+    
+    SetUserDiet();
+    FoodData diet = this->user_diet;
+
+    int napiArraySize = 5;
+    Napi::Array resultNapi = Napi::Array::New(info.Env(), napiArraySize);
+    
+    // populate napi array
+    int ind0 = 0;
+    int ind1 = 1;
+    int ind2 = 2;
+    int ind3 = 3;
+    int ind4 = 4;
+    double cals = diet.Energ_Kcal;
+    double protein = diet.Protein_g;
+    double carbs = diet.Carbohydrt_g;
+    double fat = diet.Lipid_Tot_g;
+    double sugar = diet.Sugar_Tot_g;
+    resultNapi[ind0] = Napi::Number::New(info.Env(), cals);
+    resultNapi[ind1] = Napi::Number::New(info.Env(), protein);
+    resultNapi[ind2] = Napi::Number::New(info.Env(), carbs);
+    resultNapi[ind3] = Napi::Number::New(info.Env(), fat);
+    resultNapi[ind4] = Napi::Number::New(info.Env(), sugar);
+
+    return resultNapi;
+}
+
 /*
 SplayTree::SplayTree() {
     root = nullptr;

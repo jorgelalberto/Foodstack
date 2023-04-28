@@ -10,12 +10,15 @@ function searchIngredients(e){
         let timeST = data.timeST;
         let avgtimeST = data.avgtimeST;
         let avgtimeHM = data.avgtimeHM;
+        let root = data.root;
         searchResults.innerHTML = '';
         algoResults.innerHTML = '';
 
         algoResults.innerHTML += '<a id="timeST">' + "SplayTree: "+ timeST + '</a>';
         algoResults.innerHTML += '<a id="avgtimeST">' + "SplayTree Avg: " + avgtimeST + "ns" + '</a>';
         algoResults.innerHTML += '<a id="avgtimeHM">' + "HashMap Avg: " + avgtimeHM + "ns" +  '</a>';
+        algoResults.innerHTML += '<a id="avgtimeHM">' + "SplayTree Root: " + root + '</a>';
+
         if (payload.length < 1) {
           searchResults.innerHTML = '<a>Sorry. Nothing Found.</a>'
           return;
@@ -42,6 +45,7 @@ function ingredientValues(e){
         let timeHM = data.timeHM;
         let avgtimeST = data.avgtimeST;
         let avgtimeHM = data.avgtimeHM;
+        let root = data.root;
         ingredientInfo.innerHTML = '';
         algoResults.innerHTML = '';
 
@@ -57,6 +61,7 @@ function ingredientValues(e){
         algoResults.innerHTML += '<a id="timeHM">' + "HashMap: " + timeHM + "ns" +  '</a>';
         algoResults.innerHTML += '<a id="avgtimeST">' + "SplayTree Avg: " + avgtimeST + "ns" + '</a>';
         algoResults.innerHTML += '<a id="avgtimeHM">' + "HashMap Avg: " + avgtimeHM + "ns" +  '</a>';
+        algoResults.innerHTML += '<a id="avgtimeHM">' + "SplayTree Root: " + root + '</a>';
         
         // display in macros
         ingredientValues.forEach((item, index) => {
@@ -81,27 +86,16 @@ function showMealMacros(e){
     body: JSON.stringify({sentMealNum: specifiedMealNum})
   }).then(res => res.json()).then(data => {
     const ingredientInfo = document.getElementById('ingredientInfo');
-      let ingredientValues = data.ingredientValues;
-      let timeST = data.timeST;
-      let timeHM = data.timeHM;
-      let avgtimeST = data.avgtimeST;
-      let avgtimeHM = data.avgtimeHM;
+      let mealTotal = data.mealTotal;
       ingredientInfo.innerHTML = '';
-      algoResults.innerHTML = '';
 
-      // display algo info
-      algoResults.innerHTML += '<a id="timeST">' + "SplayTree: " + timeST + "ns" + '</a>';
-      algoResults.innerHTML += '<a id="timeHM">' + "HashMap: " + timeHM + "ns" +  '</a>';
-      algoResults.innerHTML += '<a id="avgtimeST">' + "SplayTree Avg: " + avgtimeST + "ns" + '</a>';
-      algoResults.innerHTML += '<a id="avgtimeHM">' + "HashMap Avg: " + avgtimeHM + "ns" +  '</a>';
-      
       // display in macros
-      ingredientValues.forEach((item, index) => {
+      mealTotal.forEach((item, index) => {
         if (index == 0) ingredientInfo.innerHTML += '<a href="#">' + "Calories: " + item + '</a>';
-        if (index == 1) ingredientInfo.innerHTML += '<a href="#">' + "Protein: " + item + '</a>';
-        if (index == 2) ingredientInfo.innerHTML += '<a href="#">' + "Carbs: " + item + '</a>';
-        if (index == 3) ingredientInfo.innerHTML += '<a href="#">' + "Fats: " + item + '</a>';
-        if (index == 4) ingredientInfo.innerHTML += '<a href="#">' + "Sugars: " + item + '</a>';
+        else if (index == 1) ingredientInfo.innerHTML += '<a href="#">' + "Protein: " + item + '</a>';
+        else if (index == 2) ingredientInfo.innerHTML += '<a href="#">' + "Carbs: " + item + '</a>';
+        else if (index == 3) ingredientInfo.innerHTML += '<a href="#">' + "Fats: " + item + '</a>';
+        else if (index == 4) ingredientInfo.innerHTML += '<a href="#">' + "Sugars: " + item + '</a>';
       });
       return;
   });

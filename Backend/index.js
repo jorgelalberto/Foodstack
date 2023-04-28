@@ -4,19 +4,7 @@ var splayTreeAddon = require('./build/Debug/SPLAYTREE.node');
 var hashmapAddon = require('./build/Debug/HASHMAP.node');
 var splayTree = new splayTreeAddon.SplayTree();
 var hashMap = new hashmapAddon.HashMap();
-
-/* SplayTree Functions */
-// Returns 5 specfied values of Ingredient
-console.log('Func : ', splayTree.searchnapi('BUTTER,WITH SALT'));
-// Returns all partial matches of Typed Information
-console.log('Func : ', splayTree.searchpartialmatchesnapi('BUTTER,WITH SALT'));
-// Returns time of last search operation
-console.log('Func : ', splayTree.gettimenapi());
-// FIXME: implement bmr function
-/* HashMap Functions */
-// Returns 5 specfied values of Ingredient
-console.log('Func : ', hashMap.searchnapi('BUTTER,WITH SALT'));
-console.log('Func : ', hashMap.gettimenapi());
+console.log(); console.log(); console.log(); console.log();
 
 // Imports & Const Vars
 const express = require('express')
@@ -105,7 +93,9 @@ app.post('/homePage/search', async (req, res) => {
     let time = splayTree.gettimenapi();
     //limit search results to 10
     search = search.slice(0,10);
-    res.send({payload: search, "timeST": time, "passID":id, "avgtimeST": avg_ST_performance, "avgtimeHM": avg_HM_performance});
+    let topnode = splayTree.gettopnodenapi();
+
+    res.send({payload: search, "timeST": time, "passID":id, "avgtimeST": avg_ST_performance, "avgtimeHM": avg_HM_performance, "root": topnode});
 });
 app.post('/homePage/ingredientValues', async (req, res) => {
     let ingredient = req.body.ingredient.trim();
@@ -114,13 +104,15 @@ app.post('/homePage/ingredientValues', async (req, res) => {
     let macrosHM = hashMap.searchnapi(ingredient);
     let time1 = splayTree.gettimenapi();
     let time2 = hashMap.gettimenapi();
+    let topnode = splayTree.gettopnodenapi();
+    splayTree.updatemealnapi(ingredient);
 
     numSearchCalls += 1;
     avg_ST_performance = parseFloat(((avg_ST_performance*(numSearchCalls-1)) + time1)/numSearchCalls).toFixed(2);
     avg_HM_performance = parseFloat(((avg_HM_performance*(numSearchCalls-1)) + time2)/numSearchCalls).toFixed(2);
 
 
-    res.send({"ingredientValues": macrosST, "timeST": time1, "timeHM": time2, "writetoID": id, "avgtimeST": avg_ST_performance, "avgtimeHM": avg_HM_performance});
+    res.send({"ingredientValues": macrosST, "timeST": time1, "timeHM": time2, "writetoID": id, "avgtimeST": avg_ST_performance, "avgtimeHM": avg_HM_performance, "root": topnode});
     if (mealNum == 0) meal1[numIngr] = ingredient;
     else if (mealNum == 1) meal2[numIngr] = ingredient;
     else if (mealNum == 2) meal3[numIngr] = ingredient;
@@ -131,32 +123,13 @@ app.post('/homePage/ingredientValues', async (req, res) => {
     numIngr += 1;
     if (numIngr % 5 == 0) mealNum = mealNum + 1;
 });
-/*
 app.post('/homePage/mealValues', async (req, res) => {
     let sentMealNum = req.body.sentMealNum.trim();
-    let totatlMacrosST = 0;
+    let macros = splayTree.getmealnapi(sentMealNum - 1)
 
-    if (sentMealNum == 0) {
-        for (let i=0; i<Meal1.length; i++)
-        let macrosST = splayTree.searchnapi(ingredient);
-        let macrosHM = hashMap.searchnapi(ingredient);
-        let time1 = splayTree.gettimenapi();
-        let time2 = hashMap.gettimenapi();
-    
-        numSearchCalls += 1;
-        avg_ST_performance = parseFloat(((avg_ST_performance*(numSearchCalls-1)) + time1)/numSearchCalls).toFixed(2);
-        avg_HM_performance = parseFloat(((avg_HM_performance*(numSearchCalls-1)) + time2)/numSearchCalls).toFixed(2);
-
-    }meal1[numIngr] = ingredient;
-    else if (sentMealNum == 1) meal2[numIngr] = ingredient;
-    else if (sentMealNum == 2) meal3[numIngr] = ingredient;
-    else if (sentMealNum == 3) meal4[numIngr] = ingredient;
-    else if (sentMealNum == 4) meal5[numIngr] = ingredient;
-    else if (sentMealNum == 5) meal6[numIngr] = ingredient;
-
-    res.send({"ingredientValues": macrosST, "timeST": time1, "timeHM": time2, "writetoID": id, "avgtimeST": avg_ST_performance, "avgtimeHM": avg_HM_performance});
+    console.log(macros)
+    res.send({"mealTotal": macros});
 });
-*/
 
 
 //Listen on port 3000
